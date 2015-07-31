@@ -1,1 +1,1 @@
-include ':apps:app', ':Konashi:konashi-v2-android-sdk', ':apps:pwm_test', ':apps:analog_test', ':apps:uart_tester'
+include ':apps:app', ':Konashi:konashi-v2-android-sdk', ':apps:pwm_test', ':apps:analog_test', ':apps:uart_tester', ':apps:test_all_functions'
