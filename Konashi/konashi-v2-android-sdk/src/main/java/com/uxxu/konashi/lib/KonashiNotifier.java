@@ -125,6 +125,9 @@ public class KonashiNotifier {
                     case UPDATE_SIGNAL_STRENGTH:
                         observer.onUpdateSignalStrength(Integer.valueOf(param0.toString()));
                         break;
+                    case I2C_READ_COMPLETE:
+                        observer.onCompleteI2cRx((byte[])param0);
+                        break;
                     case CANCEL_SELECT_KONASHI:
                         observer.onCancelSelectKonashi();
                         break;

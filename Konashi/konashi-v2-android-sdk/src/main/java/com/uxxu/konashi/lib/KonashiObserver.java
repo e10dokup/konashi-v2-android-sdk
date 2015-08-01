@@ -98,6 +98,10 @@ public abstract class KonashiObserver {
      */
     public void onUpdateSignalStrength(int rssi){}
     /**
+     * I2CのRxからデータを受信した時
+     */
+    public void onCompleteI2cRx(byte[] data){}
+    /**
      * BLEデバイス選択ダイアログをキャンセルした時に呼ばれる
      */
     public void onCancelSelectKonashi(){}
