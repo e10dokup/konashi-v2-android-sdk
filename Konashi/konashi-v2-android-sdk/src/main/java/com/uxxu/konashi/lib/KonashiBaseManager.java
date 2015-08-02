@@ -438,15 +438,15 @@ public class KonashiBaseManager implements BluetoothAdapter.LeScanCallback, OnBl
                 uuid = characteristic.getUuid();
                 
                 if(uuid.equals(KonashiUUID.ANALOG_READ0_UUID)){
-                    value = (characteristic.getValue()[0]<<8 & 0xFF00) + (characteristic.getValue()[1] & 0xFF);
+                    value = (characteristic.getValue()[0]<<8 & 0xFF00) | (characteristic.getValue()[1] & 0xFF);
                     onUpdateAnalogValue(Konashi.AIO0, value);
                 }
                 else if(uuid.equals(KonashiUUID.ANALOG_READ1_UUID)){
-                    value = (characteristic.getValue()[0]<<8 & 0xFF) | (characteristic.getValue()[1] & 0xFF);
+                    value = (characteristic.getValue()[0]<<8 & 0xFF00) | (characteristic.getValue()[1] & 0xFF);
                     onUpdateAnalogValue(Konashi.AIO1, value);
                 }
                 else if(uuid.equals(KonashiUUID.ANALOG_READ2_UUID)){
-                    value = (characteristic.getValue()[0]<<8 & 0xFF) | (characteristic.getValue()[1] & 0xFF);
+                    value = (characteristic.getValue()[0]<<8 & 0xFF00) | (characteristic.getValue()[1] & 0xFF);
                     onUpdateAnalogValue(Konashi.AIO2, value);
                 }
                 else if(uuid.equals(KonashiUUID.BATTERY_LEVEL_UUID)){

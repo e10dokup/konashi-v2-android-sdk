@@ -33,39 +33,45 @@
             android:layout_margin="@dimen/find_button_margin"
             android:text="@string/reset_button"/>
 
-        <TextView
+        <Button
+            android:id="@+id/button_read_aio0"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/label_power_seekbar"
             android:layout_margin="@dimen/find_button_margin"
-            android:gravity="left"/>
-
-        <SeekBar
-            android:id="@+id/seekbar_power"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:max="100"
-            android:progress="0"
-            android:layout_margin="@dimen/find_button_margin" />
+            android:text="readaio0"/>
 
         <Button
-            android:id="@+id/button_write_led"
+            android:id="@+id/button_read_aio1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/find_button_margin"
-            android:text="@string/button_write_led"/>
+            android:text="readaio1"/>
 
         <Button
-            android:id="@+id/button_read_aio"
+            android:id="@+id/button_read_aio2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/find_button_margin"
-            android:text="readaio"/>
+            android:text="readaio2"/>
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/text_read_input"
+            android:id="@+id/text_read_input0"
+            android:layout_margin="@dimen/find_button_margin"
+            android:text="@string/text_read_input"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/text_read_input1"
+            android:layout_margin="@dimen/find_button_margin"
+            android:text="@string/text_read_input"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/text_read_input2"
             android:layout_margin="@dimen/find_button_margin"
             android:text="@string/text_read_input"/>
 

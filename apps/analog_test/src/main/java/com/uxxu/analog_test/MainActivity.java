@@ -23,13 +23,12 @@ public class MainActivity extends KonashiActivity {
     private Button mFindButton;
     private Button mCheckConnectionButton;
     private Button mResetButton;
-    private Button mOutputButton;
-    private TextView mReadInputText;
-    private Button mReadAioButton;
-
-    private SeekBar mSeekBar;
-
-    private int mPowerRate;
+    private TextView mReadInput0Text;
+    private TextView mReadInput1Text;
+    private TextView mReadInput2Text;
+    private Button mReadAio0Button;
+    private Button mReadAio1Button;
+    private Button mReadAio2Button;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,52 +85,34 @@ public class MainActivity extends KonashiActivity {
             }
         });
 
-        mSeekBar = (SeekBar)findViewById(R.id.seekbar_power);
-        mSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                mPowerRate = i;
-            }
+        mReadInput0Text = (TextView)findViewById(R.id.text_read_input0);
+        mReadInput0Text = (TextView)findViewById(R.id.text_read_input1);
+        mReadInput0Text = (TextView)findViewById(R.id.text_read_input2);
 
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-
-            }
-        });
-
-        mOutputButton = (Button)findViewById(R.id.button_write_led);
-//        mOutputButton.setOnTouchListener(new View.OnTouchListener() {
-//            @Override
-//            public boolean onTouch(View view, MotionEvent motionEvent) {
-//                switch(motionEvent.getAction()){
-//                    case MotionEvent.ACTION_DOWN:
-//                        // 触った時
-//                        getKonashiManager().analogWrite(Konashi.AIO1, Konashi.ANALOG_REFERENCE * mPowerRate / 100);
-//                        break;
-//
-//                    case MotionEvent.ACTION_UP:
-//                        // 離した時
-//                        getKonashiManager().analogWrite(Konashi.AIO1, 0);
-//                        break;
-//                }
-//                return false;
-//            }
-//        });
-
-        mReadInputText = (TextView)findViewById(R.id.text_read_input);
-
-        mReadAioButton = (Button)findViewById(R.id.button_read_aio);
-        mReadAioButton.setOnClickListener(new View.OnClickListener() {
+        mReadAio0Button = (Button)findViewById(R.id.button_read_aio0);
+        mReadAio0Button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 getKonashiManager().analogReadRequest(Konashi.AIO0);
             }
         });
+
+        mReadAio1Button = (Button)findViewById(R.id.button_read_aio1);
+        mReadAio1Button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getKonashiManager().analogReadRequest(Konashi.AIO1);
+            }
+        });
+
+        mReadAio2Button = (Button)findViewById(R.id.button_read_aio2);
+        mReadAio2Button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getKonashiManager().analogReadRequest(Konashi.AIO2);
+            }
+        });
+
 
         // konashiのイベントハンドラを設定。定義は下の方にあります
         getKonashiManager().addObserver(mKonashiObserver);
@@ -149,7 +130,6 @@ public class MainActivity extends KonashiActivity {
             mFindButton.setText(getText(R.string.disconnect_button));
             // ボタンを表示する
             mContainer.setVisibility(View.VISIBLE);
-            // konashiのポートの定義。AIO0にanalogRead要求送信
         }
 
         @Override
@@ -159,7 +139,17 @@ public class MainActivity extends KonashiActivity {
 
         @Override
         public void onUpdateAnalogValueAio0(int value) {
-            mReadInputText.setText(getText(R.string.text_read_input) + " " + String.valueOf(value));
+            mReadInput0Text.setText(getText(R.string.text_read_input) + " 0 " + String.valueOf(value));
+        }
+
+        @Override
+        public void onUpdateAnalogValueAio1(int value) {
+            mReadInput1Text.setText(getText(R.string.text_read_input) + " 1 " + String.valueOf(value));
+        }
+
+        @Override
+        public void onUpdateAnalogValueAio2(int value) {
+            mReadInput2Text.setText(getText(R.string.text_read_input) + " 2 " + String.valueOf(value));
         }
     };
 }
