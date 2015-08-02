@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity
             }
 
             @Override
-            public void onDisconncted() {
+            public void onDisconnected() {
                 KonashiUtils.log("onDisconnected");
                 refreshActionBarMenu();
                 mOverlay.setVisibility(View.VISIBLE);

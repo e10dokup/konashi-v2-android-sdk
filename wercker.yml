@@ -1,0 +1,26 @@
+box: wercker/android
+build:
+  steps:
+    - script:
+        name: show base information
+        code: |
+          gradle -v
+          echo $ANDROID_HOME
+          echo $ANDROID_BUILD_TOOLS
+          echo $ANDROID_UPDATE_FILTER
+    - android-sdk-update:
+        filter: platform-tools,extra-android-m2repository,extra-android-support
+    - setup-android-emulator:
+        target: android-22
+    - script:
+        name: run gradle connectedAndroidTest
+        code: |
+          gradle --full-stacktrace -q --project-cache-dir=$WERCKER_CACHE_DIR connectedAndroidTest
+  after-steps:
+    - script:
+        name: inspect build result
+        code: |
+          pwd
+          cd Konashi
+          ls -la ./konashi-v2-android-sdk/build/outputs/
+          cp -r ./konashi-v2-android-sdk/build/outputs/* ${WERCKER_REPORT_ARTIFACTS_DIR}

@@ -99,7 +99,7 @@ public class KonashiManager extends KonashiBaseManager implements KonashiApiInte
         mBatteryLevel = 0;
         mRssi = 0;
     }
-    
+
     @Override
     public void initialize(Context context) {
         super.initialize(context);
