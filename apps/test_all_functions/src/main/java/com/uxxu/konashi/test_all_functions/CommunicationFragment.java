@@ -51,6 +51,11 @@ public final class CommunicationFragment extends Fragment {
             public void onCompleteUartRx(byte[] data) {
                 mUartResultEditText.append(new String(data));
             }
+
+            @Override
+            public void onCompleteI2cRx(byte[] data) {
+                mI2cResultEditText.append(new String(data));
+            }
         };
         mKonashiManager.addObserver(mCommunicationObserver);
     }
@@ -162,7 +167,13 @@ public final class CommunicationFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 mKonashiManager.i2cStartCondition();
-                mKonashiManager.i2cReadRequest(Konashi.I2C_DATA_MAX_LENGTH, (byte) 0x1F);
+                try {
+                    Thread.sleep(200);
+                    mKonashiManager.i2cReadRequest(Konashi.I2C_DATA_MAX_LENGTH, (byte) 0x1F);
+                    Thread.sleep(200);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
                 mKonashiManager.i2cStopCondition();
             }
         });
@@ -171,7 +182,7 @@ public final class CommunicationFragment extends Fragment {
         mI2cResultClearButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                mI2cResultEditText.setText(""); TODO: uncomment here
+                mI2cResultEditText.setText("");
             }
         });
     }

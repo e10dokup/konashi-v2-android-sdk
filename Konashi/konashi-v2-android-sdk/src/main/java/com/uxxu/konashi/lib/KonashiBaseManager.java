@@ -27,6 +27,8 @@ import com.uxxu.konashi.lib.ui.BleDeviceSelectionDialog.OnBleDeviceSelectListene
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.UUID;
@@ -453,6 +455,10 @@ public class KonashiBaseManager implements BluetoothAdapter.LeScanCallback, OnBl
                     value = characteristic.getValue()[0] & 0xFF;
                     onUpdateBatteryLevel(value);
                 }
+                else if(uuid.equals(KonashiUUID.I2C_READ_PARAM_UUID)){
+                    byte[] values = characteristic.getValue();
+                    onReceiveI2c(Arrays.copyOfRange(values, 2, values.length));
+                }
             } else {
                 KonashiUtils.log("onCharacteristicRead GATT_FAILURE");
             }
@@ -819,5 +825,13 @@ public class KonashiBaseManager implements BluetoothAdapter.LeScanCallback, OnBl
      */
     protected void onUpdateSignalSrength(int rssi){
         notifyKonashiEvent(KonashiEvent.UPDATE_SIGNAL_STRENGTH, rssi);
+    }
+
+    /**
+     * konashiのI2C Rxからデータを受信した時
+     * @param data 受信データ
+     */
+    protected void onReceiveI2c(byte[] data) {
+        notifyKonashiEvent(KonashiEvent.I2C_READ_COMPLETE, data);
     }
 }
