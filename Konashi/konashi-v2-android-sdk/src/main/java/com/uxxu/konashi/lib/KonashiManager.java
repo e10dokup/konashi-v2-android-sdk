@@ -2,6 +2,9 @@ package com.uxxu.konashi.lib;
 
 import android.content.Context;
 
+import com.uxxu.konashi.lib.delegators.I2cHelper;
+import com.uxxu.konashi.lib.entities.KonashiWriteMessage;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,11 +50,8 @@ public class KonashiManager extends KonashiBaseManager implements KonashiApiInte
     private int[] mAioValue;
     
     // I2C
-    private byte mI2cSetting;
-    private byte[] mI2cReadData;
-    private int mI2cReadDataLength;
-    private byte mI2cReadAddress;
-    
+    private I2cHelper mI2cHelper;
+
     // UART
     private byte mUartSetting;
     private byte mUartBaudrate;
@@ -89,13 +89,8 @@ public class KonashiManager extends KonashiBaseManager implements KonashiApiInte
             mAioValue[i] = 0;
         
         // I2C
-        mI2cSetting = 0;
-        mI2cReadData = new byte[Konashi.I2C_DATA_MAX_LENGTH];
-        for(i=0; i<Konashi.I2C_DATA_MAX_LENGTH; i++)
-            mI2cReadData[i] = 0;
-        mI2cReadDataLength = 0;
-        mI2cReadAddress = 0;
-            
+        mI2cHelper = new I2cHelper(this, mNotifier);
+
         // UART
         mUartSetting = 0;
         mUartBaudrate = 0;
@@ -608,59 +603,13 @@ public class KonashiManager extends KonashiBaseManager implements KonashiApiInte
     ///////////////////////////
     
     /**
-     * I2Cのコンディションを発行する
-     * @param condition コンディション。Konashi.I2C_START_CONDITION, Konashi.I2C_RESTART_CONDITION, Konashi.I2C_STOP_CONDITION を指定できる。
-     */
-    private void i2cSendCondition(int condition) {       
-        if(!isEnableAccessKonashi()){
-            notifyKonashiError(KonashiErrorReason.NOT_READY);
-            return;
-        }
-        
-        if(!isEnableI2c()){
-            notifyKonashiError(KonashiErrorReason.NOT_ENABLED_I2C);
-            return;
-        }
-        
-        if(condition==Konashi.I2C_START_CONDITION || condition==Konashi.I2C_RESTART_CONDITION || condition==Konashi.I2C_STOP_CONDITION){
-            byte[] val = new byte[1];
-            val[0] = (byte)condition;
-            
-            addWriteMessage(KonashiUUID.I2C_START_STOP_UUID, val);
-        } else {
-            notifyKonashiError(KonashiErrorReason.INVALID_PARAMETER);
-        }
-    }
-    
-    /**
-     * I2Cが有効なモードに設定しているか
-     * @return 有効なモードに設定されているならtrue
-     */
-    public boolean isEnableI2c(){
-        return (mI2cSetting==Konashi.I2C_ENABLE || mI2cSetting==Konashi.I2C_ENABLE_100K || mI2cSetting==Konashi.I2C_ENABLE_400K);
-    }
-    
-    /**
      * I2Cを有効/無効を設定する
      * @param mode 設定するI2Cのモード。Konashi.I2C_DISABLE , Konashi.I2C_ENABLE, Konashi.I2C_ENABLE_100K, Konashi.I2C_ENABLE_400Kを指定。
      */
     @Override
     public void i2cMode(int mode) {
-        if(!isEnableAccessKonashi()){
-            notifyKonashiError(KonashiErrorReason.NOT_READY);
-            return;
-        }
-        
-        if(mode==Konashi.I2C_DISABLE || mode==Konashi.I2C_ENABLE || mode==Konashi.I2C_ENABLE_100K || mode==Konashi.I2C_ENABLE_400K){
-            mI2cSetting = (byte)mode;
-            
-            byte[] val = new byte[1];
-            val[0] = (byte)mode;
-            
-            addWriteMessage(KonashiUUID.I2C_CONFIG_UUID, val);
-        } else {
-            notifyKonashiError(KonashiErrorReason.INVALID_PARAMETER);
-        }
+        KonashiWriteMessage msg = mI2cHelper.getI2cModeMessage(mode);
+        if (msg != null) addWriteMessage(msg);
     }
 
     /**
@@ -668,7 +617,8 @@ public class KonashiManager extends KonashiBaseManager implements KonashiApiInte
      */
     @Override
     public void i2cStartCondition() {
-        i2cSendCondition(Konashi.I2C_START_CONDITION);        
+        KonashiWriteMessage msg = mI2cHelper.getI2cStartConditionMessage();
+        if (msg != null) addWriteMessage(msg);
     }
 
     /**
@@ -676,7 +626,8 @@ public class KonashiManager extends KonashiBaseManager implements KonashiApiInte
      */
     @Override
     public void i2cRestartCondition() {
-        i2cSendCondition(Konashi.I2C_RESTART_CONDITION);
+        KonashiWriteMessage msg = mI2cHelper.getI2cRestartConditionMessage();
+        if (msg != null) addWriteMessage(msg);
     }
 
     /**
@@ -684,7 +635,8 @@ public class KonashiManager extends KonashiBaseManager implements KonashiApiInte
      */
     @Override
     public void i2cStopCondition() {
-        i2cSendCondition(Konashi.I2C_STOP_CONDITION);
+        KonashiWriteMessage msg = mI2cHelper.getI2cStopConditionMessage();
+        if (msg != null) addWriteMessage(msg);
     }
 
     /**
@@ -694,29 +646,9 @@ public class KonashiManager extends KonashiBaseManager implements KonashiApiInte
      * @param address 書き込み先アドレス
      */
     @Override
-    public void i2cWrite(int length, byte[] data, byte address) {        
-        if(!isEnableAccessKonashi()){
-            notifyKonashiError(KonashiErrorReason.NOT_READY);
-            return;
-        }
-        
-        if(!isEnableI2c()){
-            notifyKonashiError(KonashiErrorReason.NOT_ENABLED_I2C);
-            return;
-        }
-        
-        if(length>0 && length<=Konashi.I2C_DATA_MAX_LENGTH){
-            byte[] val = new byte[20];
-            val[0] = (byte)(length + 1);
-            val[1] = (byte)((address << 1) & 0xFE);
-            for(int i=0; i<length; i++){
-                val[i+2] = data[i];
-            }
-            
-            addWriteMessage(KonashiUUID.I2C_WRITE_UUID, val);
-        } else {
-            notifyKonashiError(KonashiErrorReason.INVALID_PARAMETER);
-        }
+    public void i2cWrite(int length, byte[] data, byte address) {
+        KonashiWriteMessage msg = mI2cHelper.getI2cWriteMessage(length, data, address);
+        if (msg != null) addWriteMessage(msg);
     }
 
     /**
@@ -726,25 +658,8 @@ public class KonashiManager extends KonashiBaseManager implements KonashiApiInte
      */
     @Override
     public void i2cReadRequest(int length, byte address) {
-        if(!isEnableAccessKonashi()){
-            notifyKonashiError(KonashiErrorReason.NOT_READY);
-            return;
-        }
-        
-        if(!isEnableI2c()){
-            notifyKonashiError(KonashiErrorReason.NOT_ENABLED_I2C);
-            return;
-        }
-        
-        if(length>0 && length<=Konashi.I2C_DATA_MAX_LENGTH){
-            mI2cReadAddress = (byte)((address<<1)|0x1);
-            mI2cReadDataLength = length;
-            
-            byte[] val = {(byte)length, mI2cReadAddress};
-            addWriteMessage(KonashiUUID.I2C_READ_PARAM_UUID, val);
-        } else {
-            notifyKonashiError(KonashiErrorReason.INVALID_PARAMETER);
-        }
+        KonashiWriteMessage msg = mI2cHelper.getI2cReadRequestMessage(length, address);
+        if (msg != null) addWriteMessage(msg);
     }
     
     /**
@@ -753,22 +668,7 @@ public class KonashiManager extends KonashiBaseManager implements KonashiApiInte
      */
     @Override
     public byte[] i2cRead(int length) {
-        if(!isEnableAccessKonashi()){
-            notifyKonashiError(KonashiErrorReason.NOT_READY);
-            return null;
-        }
-        
-        if(!isEnableI2c()){
-            notifyKonashiError(KonashiErrorReason.NOT_ENABLED_I2C);
-            return null;
-        }
-        
-        if(length>0 && length<=Konashi.I2C_DATA_MAX_LENGTH && length==mI2cReadDataLength){
-            return mI2cReadData;
-        } else {
-            notifyKonashiError(KonashiErrorReason.INVALID_PARAMETER);
-            return null;
-        }        
+        return mI2cHelper.getI2cRead(length);
     }
     
     
