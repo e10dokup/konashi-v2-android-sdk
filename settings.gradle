@@ -1,1 +1,1 @@
-include ':konashi-android-sdk', ':samples:test_all_functions', ':samples:aio-sample'
+include ':konashi-android-sdk', ':samples:test_all_functions', ':samples:aio-sample', ':samples:uart-sample'
