@@ -85,7 +85,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityFragm
             public void run() {
                 boolean isReady = mKonashiManager.isReady();
                 mMenu.findItem(R.id.action_find_konashi).setVisible(!isReady);
-                mMenu.findItem(R.id.action_find_konashi).setVisible(isReady);
+                mMenu.findItem(R.id.action_disconnect).setVisible(isReady);
                 mTextNoConnection.setVisibility(isReady ? View.GONE : View.VISIBLE);
             }
         });

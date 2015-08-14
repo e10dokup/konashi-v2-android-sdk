@@ -86,7 +86,11 @@ public class MainActivityFragment extends Fragment {
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                mUartEditTexts[READ].append(new String(data));
+                StringBuilder builder = new StringBuilder();
+                for(int i=1; i < data.length ; i++){
+                    builder.append((char) data[i]);
+                }
+                mUartEditTexts[READ].append(builder.toString());
             }
         });
     }
@@ -152,7 +156,6 @@ public class MainActivityFragment extends Fragment {
 
         @Override
         public void onUpdateUartBaudrate(int baudrate) {
-            Toast.makeText(getActivity(), "baudrate set " + String.valueOf(baudrate), Toast.LENGTH_LONG).show();
         }
 
         @Override
@@ -175,6 +178,7 @@ public class MainActivityFragment extends Fragment {
         KonashiManager getKonashiManager();
     }
 
+    //TODO: baudrate 選択肢追加
     public static int uartLabelToValue(int selectedBaudrate) {
         switch(selectedBaudrate){
             case 9600:
