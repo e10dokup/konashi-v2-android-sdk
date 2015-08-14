@@ -24,7 +24,7 @@
             android:textStyle="bold"/>
 
         <Spinner
-            android:id="@+id/uartBaudrateSpinner"
+            android:id="@+id/uart_baudrate_spinner"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -32,7 +32,7 @@
             android:spinnerMode="dropdown"/>
 
         <Switch
-            android:id="@+id/uartSwitch"
+            android:id="@+id/uart_switch"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -45,7 +45,7 @@
         android:orientation="horizontal">
 
         <EditText
-            android:id="@+id/uartDataEditText"
+            android:id="@+id/uart_data_edittext"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -53,7 +53,7 @@
             android:text="abc"/>
 
         <Button
-            android:id="@+id/uartDataSendButton"
+            android:id="@+id/uart_data_send_button"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -72,7 +72,7 @@
         android:orientation="horizontal">
 
         <EditText
-            android:id="@+id/uartResultEditText"
+            android:id="@+id/uart_result_edittext"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="2"
@@ -80,7 +80,7 @@
             android:lines="2"/>
 
         <Button
-            android:id="@+id/uartResultClearButton"
+            android:id="@+id/uart_result_clear_button"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
