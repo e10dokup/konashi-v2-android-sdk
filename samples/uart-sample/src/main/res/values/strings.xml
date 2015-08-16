@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">konashi UART Sample</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="text_no_connection">No konashi connection</string>
+
+    <string name="action_find_konashi">Find Konashi</string>
+    <string name="action_disconnect">Disconnect</string>
+
+    <string name="action_settings">Settings</string>
+</resources>
