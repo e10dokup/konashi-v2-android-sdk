@@ -23,3 +23,5 @@ build:
           pwd
           ls -la ./konashi-android-sdk/build/outputs/
           cp -r ./konashi-android-sdk/build/outputs/* ${WERCKER_REPORT_ARTIFACTS_DIR}
+          REPORT_INDEX=/pipeline/build/konashi-android-sdk/build/reports/androidTests/connected/index.html
+          python .wercker/report.py $REPORT_INDEX
