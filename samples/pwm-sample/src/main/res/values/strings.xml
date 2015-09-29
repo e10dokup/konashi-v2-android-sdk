@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">konashi PWM Sasmple</string>
+
+    <string name="text_no_connection">No konashi connection</string>
+
+    <string name="action_find_konashi">Find Konashi</string>
+    <string name="action_disconnect">Disconnect</string>
+</resources>

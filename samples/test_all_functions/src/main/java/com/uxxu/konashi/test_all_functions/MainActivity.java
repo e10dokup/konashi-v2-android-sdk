@@ -156,6 +156,9 @@ public class MainActivity extends AppCompatActivity
             case 4:
                 fragment = new CommunicationFragment();
                 break;
+            case 5:
+                fragment = new KonashiJsFragment();
+                break;
         }
         if (fragment != null) {
             getFragmentManager()
