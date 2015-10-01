@@ -164,7 +164,7 @@
             android:layout_weight="2"
             android:editable="false"
             android:lines="3"
-            android:text="Not implemented yet"/>
+            android:text=""/>
 
         <LinearLayout
             android:layout_width="0dp"
