@@ -3,7 +3,6 @@ package com.uxxu.konashi.test_all_functions;
 import android.app.Fragment;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,8 +18,6 @@ import android.widget.Toast;
 import com.uxxu.konashi.lib.Konashi;
 import com.uxxu.konashi.lib.KonashiListener;
 import com.uxxu.konashi.lib.KonashiManager;
-import com.uxxu.konashi.lib.KonashiUtils;
-import com.uxxu.konashi.lib.util.UartUtils;
 
 import org.jdeferred.DoneCallback;
 import org.jdeferred.DonePipe;
@@ -37,6 +34,8 @@ public final class CommunicationFragment extends Fragment {
     public static final String TITLE = "Communication (UART, I2C)";
 
     private final KonashiManager mKonashiManager = Konashi.getManager();
+
+    private static final byte I2C_ADDRESS = 0x01f;
 
     private Switch mUartSwitch;
     private Spinner mUartBaudrateSpinner;
@@ -106,7 +105,12 @@ public final class CommunicationFragment extends Fragment {
         mUartDataSendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mKonashiManager.uartWrite(mUartDataEditText.getText().toString().getBytes())
+                byte[] value = mUartDataEditText.getText().toString().getBytes();
+                if (Konashi.UART_DATA_MAX_LENGTH < value.length) {
+                    Toast.makeText(getActivity(), "Too big data", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                mKonashiManager.uartWrite(value)
                 .then(new DoneCallback<BluetoothGattCharacteristic>() {
                     @Override
                     public void onDone(BluetoothGattCharacteristic result) {
@@ -155,60 +159,19 @@ public final class CommunicationFragment extends Fragment {
         mI2cDataSendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                final byte[] value = mI2cDataEditText.getText().toString().trim().getBytes();
+                if (Konashi.I2C_DATA_MAX_LENGTH < value.length || Konashi.UART_DATA_MAX_LENGTH < value.length) {
+                    Toast.makeText(getActivity(), "Too big data", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
                 mKonashiManager.i2cMode(Konashi.I2C_ENABLE_100K);
 
                 mKonashiManager.i2cStartCondition()
                 .then(new DonePipe<BluetoothGattCharacteristic, BluetoothGattCharacteristic, BletiaException, Object>() {
                     @Override
                     public Promise<BluetoothGattCharacteristic, BletiaException, Object> pipeDone(BluetoothGattCharacteristic result) {
-                        /*String text = mI2cDataEditText.getText().toString().trim();
-                        if (Konashi.I2C_DATA_MAX_LENGTH < text.length()) {
-                            text = text.substring(0, Konashi.I2C_DATA_MAX_LENGTH);
-                        }*/
-                        byte[] data0 = {0x31,0x00};
-                        return mKonashiManager.i2cWrite(2,data0, (byte) 0x53);
-                    }
-                })
-                .then(new DoneCallback<BluetoothGattCharacteristic>() {
-                    @Override
-                    public void onDone(BluetoothGattCharacteristic result) {
-                        mKonashiManager.i2cStopCondition();
-                    }
-                })
-                .then(new DoneCallback<BluetoothGattCharacteristic>() {
-                    @Override
-                    public void onDone(BluetoothGattCharacteristic result) {
-                        mKonashiManager.i2cStartCondition();
-                    }
-                })
-                .then(new DonePipe<BluetoothGattCharacteristic, BluetoothGattCharacteristic, BletiaException, Object>() {
-                    @Override
-                    public Promise<BluetoothGattCharacteristic, BletiaException, Object> pipeDone(BluetoothGattCharacteristic result) {
-                /*String text = mI2cDataEditText.getText().toString().trim();
-                if (Konashi.I2C_DATA_MAX_LENGTH < text.length()) {
-                    text = text.substring(0, Konashi.I2C_DATA_MAX_LENGTH);
-                }*/
-                        byte[] data1 = {0x2d, 0x08};
-                        return mKonashiManager.i2cWrite(2, data1, (byte) 0x53);
-                    }
-                })
-                .then(new DoneCallback<BluetoothGattCharacteristic>() {
-                    @Override
-                    public void onDone(BluetoothGattCharacteristic result) {
-                        mKonashiManager.i2cStopCondition();
-                    }
-                })
-                .then(new DoneCallback<BluetoothGattCharacteristic>() {
-                    @Override
-                    public void onDone(BluetoothGattCharacteristic result) {
-                        mKonashiManager.i2cStartCondition();
-                    }
-                })
-                .then(new DonePipe<BluetoothGattCharacteristic, BluetoothGattCharacteristic, BletiaException, Object>() {
-                    @Override
-                    public Promise<BluetoothGattCharacteristic, BletiaException, Object> pipeDone(BluetoothGattCharacteristic result) {
-                        byte[] data2 = {0x32};
-                        return mKonashiManager.i2cWrite(1, data2, (byte) 0x53);
+                        return mKonashiManager.i2cWrite(value.length, value, I2C_ADDRESS);
                     }
                 })
                 .then(new DoneCallback<BluetoothGattCharacteristic>() {
@@ -230,7 +193,7 @@ public final class CommunicationFragment extends Fragment {
                         .then(new DonePipe<BluetoothGattCharacteristic, byte[], BletiaException, Object>() {
                             @Override
                             public Promise<byte[], BletiaException, Object> pipeDone(BluetoothGattCharacteristic result) {
-                                return mKonashiManager.i2cRead(6, (byte) 0x53);
+                                return mKonashiManager.i2cRead(Konashi.I2C_DATA_MAX_LENGTH, I2C_ADDRESS);
                             }
                         })
                         .then(new DoneCallback<byte[]>() {
@@ -239,10 +202,15 @@ public final class CommunicationFragment extends Fragment {
                                 getActivity().runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
-                                        int x = (((int) result[1]) << 8) | result[0];
-                                        int y = (((int) result[3]) << 8) | result[2];
-                                        int z = (((int) result[5]) << 8) | result[4];
-                                        mI2cResultEditText.setText("x:" + x + " y:" + y + " z:" + z);
+                                        String value = "";
+                                        for (int i = 0; i < result.length; i++) {
+                                            if (i + 1 < result.length) {
+                                                value += String.format("%d,", result[i]);
+                                            } else {
+                                                value += String.valueOf(result[i]);
+                                            }
+                                        }
+                                        mI2cResultEditText.setText(value);
                                         mKonashiManager.i2cStopCondition();
                                     }
                                 });
