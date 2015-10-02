@@ -25,6 +25,15 @@ import android.widget.ListView;
  */
 public class NavigationDrawerFragment extends Fragment {
 
+    public static final String[] TITLES = new String[]{
+            KonashiInfoFragment.TITLE,
+            PioFragment.TITLE,
+            PwmFragment.TITLE,
+            AioFragment.TITLE,
+            CommunicationFragment.TITLE,
+            KonashiJsFragment.TITLE
+    };
+
     /**
      * Remember the position of the selected item.
      */
@@ -97,13 +106,7 @@ public class NavigationDrawerFragment extends Fragment {
                 getActionBar().getThemedContext(),
                 android.R.layout.simple_list_item_activated_1,
                 android.R.id.text1,
-                new String[]{
-                        KonashiInfoFragment.TITLE,
-                        PioFragment.TITLE,
-                        PwmFragment.TITLE,
-                        AioFragment.TITLE,
-                        CommunicationFragment.TITLE
-                }));
+                TITLES));
         mDrawerListView.setItemChecked(mCurrentSelectedPosition, true);
         return mDrawerListView;
     }

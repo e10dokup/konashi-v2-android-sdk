@@ -1,0 +1,30 @@
+<html>
+<body>
+<h1>KonashiJS sample</h1>
+<button id="find">Find</button>
+<button id="lchika">L-chika</button>
+<script src="konashi-bridge.js"></script>
+<script>
+
+window.onload = function(){
+    var konashi = window.k;
+
+    document.getElementById("find").onclick = function(){
+        konashi.find();
+    };
+    document.getElementById("lchika").onclick = function() {
+        konashi.pinMode(konashi.PIO1, konashi.OUTPUT);
+        for (var i = 0; i < 10; i++) {
+            setTimeout(function(){
+                konashi.digitalWrite(konashi.PIO1, konashi.HIGH);
+            }, i * 1000);
+            setTimeout(function(){
+                konashi.digitalWrite(konashi.PIO1, konashi.LOW);
+            }, i * 1000 + 500);
+        }
+    };
+};
+
+</script>
+</body>
+</html>
