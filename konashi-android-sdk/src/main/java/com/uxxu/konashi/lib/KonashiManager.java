@@ -532,9 +532,9 @@ public class KonashiManager extends KonashiBaseManager {
     public void wireEndTransmission(){
         if(wireDataLength != 0){
             i2cWrite(wireDataLength,wireData,this.address)
-                    .then(new DonePipe<BluetoothGattCharacteristic, BluetoothGattCharacteristic, BletiaException, Void>() {
+                    .then(new DoneCallback<BluetoothGattCharacteristic>() {
                         @Override
-                        public Promise<BluetoothGattCharacteristic, BletiaException, Void> pipeDone(BluetoothGattCharacteristic result) {
+                        public void onDone(BluetoothGattCharacteristic result) {
                             i2cStopCondition();
                         }
                     });
