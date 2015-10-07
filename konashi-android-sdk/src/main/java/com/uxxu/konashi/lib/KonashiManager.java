@@ -90,6 +90,9 @@ public class KonashiManager extends KonashiBaseManager {
     // I2C
     private I2cStore mI2cStore;
     private CharacteristicDispatcher<I2cStore, I2cStoreUpdater> mI2cDispatcher;
+    private byte address;
+    private byte wireData[20];
+    private int wireDataLength;
 
     // UART
     private UartStore mUartStore;
@@ -512,6 +515,42 @@ public class KonashiManager extends KonashiBaseManager {
                 .then(new I2cReadFilter());
     }
 
+    /**
+     * ArduinoLikeMethod
+     * @param address
+     */
+    public void wireBeginTransmission(byte address){
+        this.address = address;
+        this.i2cStartCondition();
+        this.wireDataLength = 0;
+        wireData = new byte[20];
+    }
+
+    /**
+     * ArduinoLikeMethod
+     */
+    public void wireEndTransmission(){
+        if(wireDataLength != 0){
+            i2cWrite(wireDataLength,wireData,this.address)
+                    .then(new DonePipe<BluetoothGattCharacteristic, BluetoothGattCharacteristic, BletiaException, Void>() {
+                        @Override
+                        public Promise<BluetoothGattCharacteristic, BletiaException, Void> pipeDone(BluetoothGattCharacteristic result) {
+                            i2cStopCondition();
+                        }
+                    });
+        }else {
+            this.i2cStopCondition();
+        }
+    }
+
+    /**
+     * ArduinoLikeMethod
+     * @param data
+     */
+    public void wireWrite(byte data){
+        this.wireData[wireDataLength] = data;
+        wireDataLength++;
+    }
     ///////////////////////////
     // Hardware
     ///////////////////////////
