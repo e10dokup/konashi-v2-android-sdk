@@ -3,7 +3,10 @@ package com.uxxu.konashi.lib.action;
 import android.bluetooth.BluetoothGattService;
 
 import com.uxxu.konashi.lib.Konashi;
+import com.uxxu.konashi.lib.KonashiErrorType;
 import com.uxxu.konashi.lib.util.PwmUtils;
+
+import info.izumin.android.bletia.BletiaErrorType;
 
 /**
  * Created by izumin on 9/18/15.
@@ -22,7 +25,8 @@ public class PwmLedDriveAction extends PwmDutyAction {
     }
 
     @Override
-    protected boolean hasValidParams() {
-        return PwmUtils.isValidDutyRatio(mDutyRatio) && super.hasValidParams();
+    protected BletiaErrorType validate() {
+        if (!PwmUtils.isValidDutyRatio(mDutyRatio)) return KonashiErrorType.INVALID_DUTY_RATIO;
+        else return super.validate();
     }
 }

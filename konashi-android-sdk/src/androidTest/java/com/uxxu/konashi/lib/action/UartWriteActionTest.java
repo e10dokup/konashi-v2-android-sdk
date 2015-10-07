@@ -3,6 +3,7 @@ package com.uxxu.konashi.lib.action;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattService;
 
+import com.uxxu.konashi.lib.KonashiErrorType;
 import com.uxxu.konashi.lib.store.UartStore;
 import com.uxxu.konashi.lib.util.UartUtils;
 
@@ -46,13 +47,13 @@ public class UartWriteActionTest {
     @Test
     public void hasValidParams_ForValidValue_String() throws Exception {
         mAction = new UartWriteAction(mService, "Test", mStore);
-        assertThat(mAction.hasValidParams()).isTrue();
+        assertThat(mAction.validate()).isEqualTo(KonashiErrorType.NO_ERROR);
     }
 
     @Test
-    public void hasValidParams_FotInvalidValue_TooLong() throws Exception {
+    public void hasValidParams_ForInvalidValue_TooLong() throws Exception {
         mAction = new UartWriteAction(mService, "TooLongStringHogeHogeHoge", mStore);
-        assertThat(mAction.hasValidParams()).isFalse();
+        assertThat(mAction.validate()).isEqualTo(KonashiErrorType.DATA_SIZE_TOO_LONG);
     }
 
     @Test

@@ -3,6 +3,8 @@ package com.uxxu.konashi.lib.action;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattService;
 
+import com.uxxu.konashi.lib.KonashiErrorType;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -39,31 +41,31 @@ public class PioPinPullupActionTest {
     @Test
     public void hasValidParams_ForAllPinsWithInvalidPullups() throws Exception {
         mAction = new PioPinPullupAction(mService, 0x100);
-        assertThat(mAction.hasValidParams()).isFalse();
+        assertThat(mAction.validate()).isEqualTo(KonashiErrorType.INVALID_PIN_NUMBER);
     }
 
     @Test
     public void hasValidParams_ForAllPinsWithValidPullups() throws Exception {
         mAction = new PioPinPullupAction(mService, 0xff);
-        assertThat(mAction.hasValidParams()).isTrue();
+        assertThat(mAction.validate()).isEqualTo(KonashiErrorType.NO_ERROR);
     }
 
     @Test
     public void hasValidParams_ForSinglePinWithInvalidPin() throws Exception {
         mAction = new PioPinPullupAction(mService, 8, 1, 0x02);
-        assertThat(mAction.hasValidParams()).isFalse();
+        assertThat(mAction.validate()).isEqualTo(KonashiErrorType.INVALID_PIN_NUMBER);
     }
 
     @Test
     public void hasValidParams_ForSinglePinWithInvalidPullup() throws Exception {
         mAction = new PioPinPullupAction(mService, 7, 2, 0x02);
-        assertThat(mAction.hasValidParams()).isFalse();
+        assertThat(mAction.validate()).isEqualTo(KonashiErrorType.INVALID_PULLUP_PARAM);
     }
 
     @Test
     public void hasValidParams_ForSinglePinWithValidParams() throws Exception {
         mAction = new PioPinPullupAction(mService, 7, 1, 0x02);
-        assertThat(mAction.hasValidParams()).isTrue();
+        assertThat(mAction.validate()).isEqualTo(KonashiErrorType.NO_ERROR);
     }
 
     @Test

@@ -3,8 +3,6 @@ package com.uxxu.konashi.test_all_functions;
 import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -73,7 +71,6 @@ public final class AioFragment extends Fragment {
         private final Button mReadButton;
         private final KonashiManager mKonashiManager = Konashi.getManager();
         private int mPinNumber;
-        private Handler mHandler;
 
         public static AioTableRow createWithPinNumber(Context context, final int pinNumber) {
             AioTableRow row = new AioTableRow(context);
@@ -83,8 +80,6 @@ public final class AioFragment extends Fragment {
 
         public AioTableRow(final Context context) {
             super(context);
-            mHandler = new Handler(context.getMainLooper());
-
             setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
 
             mPinTextView = new TextView(context);
@@ -110,12 +105,7 @@ public final class AioFragment extends Fragment {
                             .then(new DoneCallback<Integer>() {
                                 @Override
                                 public void onDone(final Integer result) {
-                                    mHandler.post(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            setVoltage(result / 1000.0f);
-                                        }
-                                    });
+                                    setVoltage(result / 1000.0f);
                                 }
                             });
                 }

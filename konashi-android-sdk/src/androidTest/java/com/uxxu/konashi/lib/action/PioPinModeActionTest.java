@@ -3,6 +3,8 @@ package com.uxxu.konashi.lib.action;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattService;
 
+import com.uxxu.konashi.lib.KonashiErrorType;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -39,31 +41,31 @@ public class PioPinModeActionTest {
     @Test
     public void hasValidParams_ForAllPinsWithInvalidModes() throws Exception {
         mAction = new PioPinModeAction(mService, 0x100);
-        assertThat(mAction.hasValidParams()).isFalse();
+        assertThat(mAction.validate()).isEqualTo(KonashiErrorType.INVALID_MODE);
     }
 
     @Test
     public void hasValidParams_ForAllPinsWithValidModes() throws Exception {
         mAction = new PioPinModeAction(mService, 0xff);
-        assertThat(mAction.hasValidParams()).isTrue();
+        assertThat(mAction.validate()).isEqualTo(KonashiErrorType.NO_ERROR);
     }
 
     @Test
     public void hasValidParams_ForSinglePinWithInvalidPin() throws Exception {
         mAction = new PioPinModeAction(mService, 8, 1, 0x02);
-        assertThat(mAction.hasValidParams()).isFalse();
+        assertThat(mAction.validate()).isEqualTo(KonashiErrorType.INVALID_PIN_NUMBER);
     }
 
     @Test
     public void hasValidParams_ForSinglePinWithInvalidMode() throws Exception {
         mAction = new PioPinModeAction(mService, 7, 2, 0x02);
-        assertThat(mAction.hasValidParams()).isFalse();
+        assertThat(mAction.validate()).isEqualTo(KonashiErrorType.INVALID_MODE);
     }
 
     @Test
     public void hasValidParams_ForSinglePinWithValidParams() throws Exception {
         mAction = new PioPinModeAction(mService, 7, 1, 0x02);
-        assertThat(mAction.hasValidParams()).isTrue();
+        assertThat(mAction.validate()).isEqualTo(KonashiErrorType.NO_ERROR);
     }
 
     @Test

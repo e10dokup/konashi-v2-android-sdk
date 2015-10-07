@@ -1,15 +1,16 @@
 package com.uxxu.konashi.lib.action;
 
-import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattService;
 import android.util.SparseArray;
 
 import com.uxxu.konashi.lib.Konashi;
+import com.uxxu.konashi.lib.KonashiErrorType;
 import com.uxxu.konashi.lib.KonashiUUID;
+import com.uxxu.konashi.lib.util.AioUtils;
 
 import java.util.UUID;
 
-import info.izumin.android.bletia.BleErrorType;
+import info.izumin.android.bletia.BletiaErrorType;
 import info.izumin.android.bletia.BletiaException;
 import info.izumin.android.bletia.action.ReadCharacteristicAction;
 import info.izumin.android.bletia.wrapper.BluetoothGattWrapper;
@@ -25,24 +26,32 @@ public class AioAnalogReadAction extends ReadCharacteristicAction {
         append(Konashi.AIO2, KonashiUUID.ANALOG_READ2_UUID);
     }};
 
-    protected AioAnalogReadAction(BluetoothGattCharacteristic characteristic) {
-        super(characteristic);
-    }
+    private final int mPin;
 
     public AioAnalogReadAction(BluetoothGattService service, int pin) {
-        this(service.getCharacteristic(sPin2Uuid.get(pin, null)));
+        super(service.getCharacteristic(sPin2Uuid.get(pin, KonashiUUID.ANALOG_READ0_UUID)));
+        mPin = pin;
     }
 
     @Override
     public void execute(BluetoothGattWrapper gattWrapper) {
-        if (getCharacteristic() == null) {
-            rejectIfParamsAreInvalid();
-        } else {
+        BletiaErrorType errorType = validate();
+        if (validate() == KonashiErrorType.NO_ERROR) {
             super.execute(gattWrapper);
+        } else {
+            rejectIfParamsAreInvalid(errorType);
         }
     }
 
-    private void rejectIfParamsAreInvalid() {
-        getDeferred().reject(new BletiaException(BleErrorType.INVALID_PARAMETER, getCharacteristic()));
+    protected BletiaErrorType validate() {
+        if (AioUtils.isValidPin(mPin)) {
+            return KonashiErrorType.NO_ERROR;
+        } else {
+            return KonashiErrorType.INVALID_PIN_NUMBER;
+        }
+    }
+
+    private void rejectIfParamsAreInvalid(BletiaErrorType errorType) {
+        getDeferred().reject(new BletiaException(this, errorType));
     }
 }

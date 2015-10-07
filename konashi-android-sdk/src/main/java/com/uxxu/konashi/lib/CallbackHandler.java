@@ -64,6 +64,8 @@ class CallbackHandler implements BletiaListener {
         } else if (KonashiUUID.UART_RX_NOTIFICATION_UUID.equals(uuid)) {
             mDispatcherContainer.getUartDispatcher().onDone(characteristic);
             mEmitter.emitUpdateUartRx(mManager, characteristic.getValue());
+        } else if (KonashiUUID.HARDWARE_LOW_BAT_NOTIFICATION_UUID.equals(uuid)) {
+            mEmitter.emitUpdateBatteryLevel(mManager, KonashiUtils.getBatteryLevel(characteristic));
         }
     }
 }

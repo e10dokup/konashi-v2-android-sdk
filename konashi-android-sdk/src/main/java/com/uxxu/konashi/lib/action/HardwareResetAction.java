@@ -2,9 +2,12 @@ package com.uxxu.konashi.lib.action;
 
 import android.bluetooth.BluetoothGattService;
 
+import com.uxxu.konashi.lib.KonashiErrorType;
 import com.uxxu.konashi.lib.KonashiUUID;
 
 import java.util.UUID;
+
+import info.izumin.android.bletia.BletiaErrorType;
 
 /**
  * Created by izumin on 9/25/15.
@@ -23,7 +26,7 @@ public class HardwareResetAction extends KonashiWriteCharacteristicAction {
     }
 
     @Override
-    protected boolean hasValidParams() {
-        return true;
+    protected BletiaErrorType validate() {
+        return KonashiErrorType.NO_ERROR;
     }
 }

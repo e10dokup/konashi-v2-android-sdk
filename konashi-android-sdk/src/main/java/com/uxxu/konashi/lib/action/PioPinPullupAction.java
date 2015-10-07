@@ -3,10 +3,13 @@ package com.uxxu.konashi.lib.action;
 import android.bluetooth.BluetoothGattService;
 
 import com.uxxu.konashi.lib.Konashi;
+import com.uxxu.konashi.lib.KonashiErrorType;
 import com.uxxu.konashi.lib.KonashiUUID;
 import com.uxxu.konashi.lib.util.PioUtils;
 
 import java.util.UUID;
+
+import info.izumin.android.bletia.BletiaErrorType;
 
 /**
  * Created by izumin on 9/16/15.
@@ -48,11 +51,13 @@ public class PioPinPullupAction extends KonashiWriteCharacteristicAction {
     }
 
     @Override
-    protected boolean hasValidParams() {
+    protected BletiaErrorType validate() {
         if (mIsForAll) {
-            return PioUtils.isValidPullups(mPullups);
+            return PioUtils.isValidPullups(mPullups) ? KonashiErrorType.NO_ERROR : KonashiErrorType.INVALID_PIN_NUMBER;
         } else {
-            return PioUtils.isValidPin(mPin) && PioUtils.isValidPullup(mPullup);
+            if (!PioUtils.isValidPin(mPin)) return KonashiErrorType.INVALID_PIN_NUMBER;
+            else if (!PioUtils.isValidPullup(mPullup)) return KonashiErrorType.INVALID_PULLUP_PARAM;
+            else return KonashiErrorType.NO_ERROR;
         }
     }
 }

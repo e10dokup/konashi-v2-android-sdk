@@ -23,4 +23,12 @@ public final class I2cUtils {
     public static boolean isValidDataLength(int length) {
         return (length > 0) && (length <= Konashi.I2C_DATA_MAX_LENGTH);
     }
+
+    public static boolean isTooShortDataLength(int length) {
+        return length <= 0;
+    }
+
+    public static boolean isTooLongDataLength(int length) {
+        return length > Konashi.I2C_DATA_MAX_LENGTH;
+    }
 }

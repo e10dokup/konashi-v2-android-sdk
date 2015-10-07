@@ -2,11 +2,14 @@ package com.uxxu.konashi.lib.action;
 
 import android.bluetooth.BluetoothGattService;
 
+import com.uxxu.konashi.lib.KonashiErrorType;
 import com.uxxu.konashi.lib.KonashiUUID;
 import com.uxxu.konashi.lib.store.I2cStore;
 import com.uxxu.konashi.lib.util.I2cUtils;
 
 import java.util.UUID;
+
+import info.izumin.android.bletia.BletiaErrorType;
 
 /**
  * Created by izumin on 9/21/15.
@@ -30,7 +33,9 @@ public class I2cSetReadParamAction extends I2cAction {
     }
 
     @Override
-    protected boolean hasValidParams() {
-        return I2cUtils.isValidDataLength(mLength);
+    protected BletiaErrorType validate() {
+        if(I2cUtils.isTooShortDataLength(mLength)) return KonashiErrorType.DATA_SIZE_TOO_SHORT;
+        else if(I2cUtils.isTooLongDataLength(mLength)) return KonashiErrorType.DATA_SIZE_TOO_LONG;
+        else return KonashiErrorType.NO_ERROR;
     }
 }

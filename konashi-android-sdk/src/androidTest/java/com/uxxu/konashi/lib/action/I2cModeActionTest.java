@@ -3,6 +3,7 @@ package com.uxxu.konashi.lib.action;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattService;
 
+import com.uxxu.konashi.lib.KonashiErrorType;
 import com.uxxu.konashi.lib.store.I2cStore;
 
 import org.junit.Before;
@@ -41,15 +42,15 @@ public class I2cModeActionTest {
     }
 
     @Test
-    public void hasValidParams_WithInvalidMode() throws Exception {
+    public void validate_WithInvalidMode() throws Exception {
         mAction = new I2cModeAction(mService, 0x03, mStore);
-        assertThat(mAction.hasValidParams()).isFalse();
+        assertThat(mAction.validate()).isEqualTo(KonashiErrorType.INVALID_MODE);
     }
 
     @Test
-    public void hasValidParams_WithValidMode() throws Exception {
+    public void validate_WithValidMode() throws Exception {
         mAction = new I2cModeAction(mService, 0x01, mStore);
-        assertThat(mAction.hasValidParams()).isTrue();
+        assertThat(mAction.validate()).isEqualTo(KonashiErrorType.NO_ERROR);
     }
 
     @Test

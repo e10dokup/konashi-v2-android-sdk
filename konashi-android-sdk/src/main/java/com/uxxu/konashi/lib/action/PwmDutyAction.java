@@ -2,10 +2,13 @@ package com.uxxu.konashi.lib.action;
 
 import android.bluetooth.BluetoothGattService;
 
+import com.uxxu.konashi.lib.KonashiErrorType;
 import com.uxxu.konashi.lib.KonashiUUID;
 import com.uxxu.konashi.lib.util.PwmUtils;
 
 import java.util.UUID;
+
+import info.izumin.android.bletia.BletiaErrorType;
 
 /**
  * Created by izumin on 9/18/15.
@@ -37,7 +40,9 @@ public class PwmDutyAction extends KonashiWriteCharacteristicAction {
     }
 
     @Override
-    protected boolean hasValidParams() {
-        return PwmUtils.isValidPin(mPin) && PwmUtils.isValidDuty(mDuty, mPeriod);
+    protected BletiaErrorType validate() {
+        if (!PwmUtils.isValidPin(mPin)) return KonashiErrorType.INVALID_PIN_NUMBER;
+        else if (!PwmUtils.isValidDuty(mDuty, mPeriod)) return KonashiErrorType.INVALID_DUTY_RATIO;
+        else return KonashiErrorType.NO_ERROR;
     }
 }

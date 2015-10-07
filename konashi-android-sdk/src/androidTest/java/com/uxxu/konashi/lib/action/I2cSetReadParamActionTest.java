@@ -3,6 +3,7 @@ package com.uxxu.konashi.lib.action;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattService;
 
+import com.uxxu.konashi.lib.KonashiErrorType;
 import com.uxxu.konashi.lib.store.I2cStore;
 
 import org.junit.Before;
@@ -43,19 +44,19 @@ public class I2cSetReadParamActionTest {
     @Test
     public void hasValidParams_WithOverLength() throws Exception {
         mAction = new I2cSetReadParamAction(mService, 20, (byte) 0x53, mStore);
-        assertThat(mAction.hasValidParams()).isFalse();
+        assertThat(mAction.validate()).isEqualTo(KonashiErrorType.DATA_SIZE_TOO_LONG);
     }
 
     @Test
     public void hasValidParams_WithUnderValidLength() throws Exception {
         mAction = new I2cSetReadParamAction(mService, -1, (byte) 0x53, mStore);
-        assertThat(mAction.hasValidParams()).isFalse();
+        assertThat(mAction.validate()).isEqualTo(KonashiErrorType.DATA_SIZE_TOO_SHORT);
     }
 
     @Test
     public void hasValidParams_WithValidParams() throws Exception {
         mAction = new I2cSetReadParamAction(mService, 5, (byte) 0x53, mStore);
-        assertThat(mAction.hasValidParams()).isTrue();
+        assertThat(mAction.validate()).isEqualTo(KonashiErrorType.NO_ERROR);
     }
 
     @Test

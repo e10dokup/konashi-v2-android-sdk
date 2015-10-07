@@ -3,6 +3,8 @@ package com.uxxu.konashi.lib.action;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattService;
 
+import com.uxxu.konashi.lib.KonashiErrorType;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -39,19 +41,19 @@ public class PwmPinModeActionTest {
     @Test
     public void hasValidParams_WithInvalidPin() throws Exception {
         mAction = new PwmPinModeAction(mService, 3, 1, 0x02);
-        assertThat(mAction.hasValidParams()).isFalse();
+        assertThat(mAction.validate()).isEqualTo(KonashiErrorType.INVALID_PIN_NUMBER);
     }
 
     @Test
     public void hasValidParams_WithInvalidMode() throws Exception {
         mAction = new PwmPinModeAction(mService, 2, 3, 0x02);
-        assertThat(mAction.hasValidParams()).isFalse();
+        assertThat(mAction.validate()).isEqualTo(KonashiErrorType.INVALID_MODE);
     }
 
     @Test
     public void hasValidParams_WithValidParams() throws Exception {
         mAction = new PwmPinModeAction(mService, 2, 1, 0x02);
-        assertThat(mAction.hasValidParams()).isTrue();
+        assertThat(mAction.validate()).isEqualTo(KonashiErrorType.NO_ERROR);
     }
 
     @Test

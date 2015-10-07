@@ -4,7 +4,6 @@ import android.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
@@ -31,13 +30,11 @@ public class MainActivity extends AppCompatActivity
     private NavigationDrawerFragment mNavigationDrawerFragment;
     private View mOverlay;
     private Menu mMenu;
-    private Handler mHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mHandler = new Handler();
 
         mKonashiManager.initialize(getApplicationContext());
         mNavigationDrawerFragment =
@@ -192,49 +189,34 @@ public class MainActivity extends AppCompatActivity
 
         @Override
         public void onConnect(KonashiManager manager) {
-            mHandler.post(new Runnable() {
-                @Override
-                public void run() {
-                    KonashiUtils.log("onReady");
-                    refreshActionBarMenu();
-                    mOverlay.setVisibility(View.GONE);
+            KonashiUtils.log("onReady");
+            refreshActionBarMenu();
+            mOverlay.setVisibility(View.GONE);
 
-                    Toast.makeText(MainActivity.this, "Connected", Toast.LENGTH_SHORT).show();
-                }
-            });
+            Toast.makeText(MainActivity.this, "Connected", Toast.LENGTH_SHORT).show();
         }
 
         @Override
         public void onDisconnect(KonashiManager manager) {
-            mHandler.post(new Runnable() {
-                @Override
-                public void run() {
-                    KonashiUtils.log("onDisconnected");
-                    refreshActionBarMenu();
-                    mOverlay.setVisibility(View.VISIBLE);
+            KonashiUtils.log("onDisconnected");
+            refreshActionBarMenu();
+            mOverlay.setVisibility(View.VISIBLE);
 
-                    Toast.makeText(MainActivity.this, "Disconnected", Toast.LENGTH_SHORT).show();
-                }
-            });
+            Toast.makeText(MainActivity.this, "Disconnected", Toast.LENGTH_SHORT).show();
         }
 
         @Override
         public void onError(KonashiManager manager, final BletiaException e) {
-            mHandler.post(new Runnable() {
-                @Override
-                public void run() {
-                    new AlertDialog.Builder(MainActivity.this)
-                            .setTitle("Error")
-                            .setMessage(e.getMessage())
-                            .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-                                    dialogInterface.dismiss();
-                                }
-                            })
-                            .show();
-                }
-            });
+            new AlertDialog.Builder(MainActivity.this)
+                    .setTitle("Error")
+                    .setMessage(e.getMessage())
+                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            dialogInterface.dismiss();
+                        }
+                    })
+                    .show();
         }
 
         @Override

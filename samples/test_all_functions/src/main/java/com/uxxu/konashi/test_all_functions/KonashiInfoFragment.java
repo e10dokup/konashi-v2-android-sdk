@@ -2,7 +2,6 @@ package com.uxxu.konashi.test_all_functions;
 
 import android.app.Fragment;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,13 +29,11 @@ public final class KonashiInfoFragment extends Fragment {
     private TextView mBatteryTextView;
     private ProgressBar mBatteryProgressBar;
     private Button mReloadButton;
-    private Handler mHandler;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getActivity().setTitle(TITLE);
-        mHandler = new Handler(getActivity().getMainLooper());
     }
 
     @Override
@@ -73,23 +70,14 @@ public final class KonashiInfoFragment extends Fragment {
         if (!mKonashiManager.isReady()) {
             return;
         }
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                mNameTextView.setText(mKonashiManager.getPeripheralName());
-            }
-        });
+
+        mNameTextView.setText(mKonashiManager.getPeripheralName());
 
         mKonashiManager.getBatteryLevel().then(new DoneCallback<Integer>() {
             @Override
             public void onDone(final Integer result) {
-                mHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        mBatteryTextView.setText(String.format("%d%%", result));
-                        mBatteryProgressBar.setProgress(result);
-                    }
-                });
+                mBatteryTextView.setText(String.format("%d%%", result));
+                mBatteryProgressBar.setProgress(result);
             }
         });
         mKonashiManager.getSignalStrength().then(new DoneCallback<Integer>() {

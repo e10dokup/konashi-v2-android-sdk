@@ -29,7 +29,7 @@ public abstract class I2cAction extends KonashiWriteCharacteristicAction {
         if (mStore.isEnabled() || mIsTypeMode) {
             super.execute(gattWrapper);
         } else {
-            getDeferred().reject(new BletiaException(KonashiErrorType.NOT_ENABLED_I2C));
+            getDeferred().reject(new BletiaException(this, KonashiErrorType.NOT_ENABLED_I2C));
         }
     }
 }

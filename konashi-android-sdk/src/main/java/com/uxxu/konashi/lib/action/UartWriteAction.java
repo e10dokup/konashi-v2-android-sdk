@@ -3,11 +3,14 @@ package com.uxxu.konashi.lib.action;
 import android.bluetooth.BluetoothGattService;
 
 import com.uxxu.konashi.lib.Konashi;
+import com.uxxu.konashi.lib.KonashiErrorType;
 import com.uxxu.konashi.lib.KonashiUUID;
 import com.uxxu.konashi.lib.store.UartStore;
 import com.uxxu.konashi.lib.util.UartUtils;
 
 import java.util.UUID;
+
+import info.izumin.android.bletia.BletiaErrorType;
 
 /**
  * Created by e10dokup on 2015/09/23
@@ -35,8 +38,10 @@ public class UartWriteAction extends UartAction {
     }
 
     @Override
-    protected boolean hasValidParams() {
+    protected BletiaErrorType validate() {
         int length = mWriteData.length;
-        return UartUtils.isValidLength(length);
+        if (UartUtils.isLengthTooShort(length)) return KonashiErrorType.DATA_SIZE_TOO_SHORT;
+        else if (UartUtils.isLengthTooLong(length)) return KonashiErrorType.DATA_SIZE_TOO_LONG;
+        else return KonashiErrorType.NO_ERROR;
     }
 }

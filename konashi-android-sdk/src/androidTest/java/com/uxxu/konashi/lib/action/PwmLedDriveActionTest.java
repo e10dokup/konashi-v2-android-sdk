@@ -3,6 +3,8 @@ package com.uxxu.konashi.lib.action;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattService;
 
+import com.uxxu.konashi.lib.KonashiErrorType;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -39,19 +41,19 @@ public class PwmLedDriveActionTest {
     @Test
     public void hasValidParams_WithInvalidDutyRatio() throws Exception {
         mAction = new PwmLedDriveAction(mService, 2, 400, 3);
-        assertThat(mAction.hasValidParams()).isFalse();
+        assertThat(mAction.validate()).isEqualTo(KonashiErrorType.INVALID_DUTY_RATIO);
     }
 
     @Test
     public void hasValidParams_WithDutyOverPeriod() throws Exception {
         mAction = new PwmLedDriveAction(mService, 2, 400, 3);
-        assertThat(mAction.hasValidParams()).isFalse();
+        assertThat(mAction.validate()).isEqualTo(KonashiErrorType.INVALID_DUTY_RATIO);
     }
 
     @Test
     public void hasValidParams_WithValidDutyRatio() throws Exception {
         mAction = new PwmLedDriveAction(mService, 2, 30, 4000);
-        assertThat(mAction.hasValidParams()).isTrue();
+        assertThat(mAction.validate()).isEqualTo(KonashiErrorType.NO_ERROR);
     }
 
     @Test

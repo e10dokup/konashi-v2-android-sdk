@@ -32,7 +32,7 @@ public abstract class UartAction extends KonashiWriteCharacteristicAction{
         if(mStore.getMode() == Konashi.UART_ENABLE || mIsTypeMode) {
             super.execute(gattWrapper);
         } else {
-            getDeferred().reject(new BletiaException(KonashiErrorType.NOT_ENABLED_UART));
+            getDeferred().reject(new BletiaException(this, KonashiErrorType.NOT_ENABLED_UART));
         }
     }
 }

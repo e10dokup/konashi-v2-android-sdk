@@ -4,6 +4,7 @@ import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattService;
 
 import com.uxxu.konashi.lib.Konashi;
+import com.uxxu.konashi.lib.KonashiErrorType;
 import com.uxxu.konashi.lib.KonashiUtils;
 import com.uxxu.konashi.lib.store.UartStore;
 
@@ -48,13 +49,13 @@ public class UartModeActionTest {
     @Test
     public void hasValidParams_ForValidValue() throws Exception {
         mAction = new UartModeAction(mService, Konashi.UART_ENABLE, mStore);
-        assertThat(mAction.hasValidParams()).isTrue();
+        assertThat(mAction.validate()).isEqualTo(KonashiErrorType.NO_ERROR);
     }
 
     @Test
     public void hasValidParams_FotInvalidValue() throws Exception {
         mAction = new UartModeAction(mService, 100, mStore);
-        assertThat(mAction.hasValidParams()).isFalse();
+        assertThat(mAction.validate()).isEqualTo(KonashiErrorType.INVALID_MODE);
     }
 
     @Test

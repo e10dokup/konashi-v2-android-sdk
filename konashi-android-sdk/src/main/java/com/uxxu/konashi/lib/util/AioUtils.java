@@ -10,6 +10,10 @@ public final class AioUtils {
         throw new AssertionError("constructor of the utility class should not be called");
     }
 
+    public static boolean isValidPin(int pin) {
+        return (pin == Konashi.AIO0) || (pin == Konashi.AIO1) || (pin == Konashi.AIO2);
+    }
+
     public static int getAnalogValue(int pin, byte[] value) {
         switch (pin) {
             case Konashi.AIO0:
