@@ -91,10 +91,14 @@ public class KonashiManager {
     // I2C
     private I2cStore mI2cStore;
     private CharacteristicDispatcher<I2cStore, I2cStoreUpdater> mI2cDispatcher;
+    private byte address;
+    private byte wireData[20];
+    private int wireDataLength;
 
     // UART
     private UartStore mUartStore;
     private CharacteristicDispatcher<UartStore, UartStoreUpdater> mUartDispatcher;
+    private int serialSpeed;
 
     private Bletia mBletia;
     private EventEmitter mEmitter;
@@ -463,12 +467,33 @@ public class KonashiManager {
 //            notifyKonashiError(KonashiErrorReason.NOT_ENABLED_UART);
 //        }
 //    }
-    
-    
+
+    /**
+     * ArduinoLike な Method
+     * @param speed
+     */
+    public void serialBegin(int speed){
+        serialSpeed = speed;
+        uartMode(Konashi.UART_ENABLE)
+                .then(new DoneCallback<BluetoothGattCharacteristic>() {
+                    @Override
+                    public void onDone(BluetoothGattCharacteristic result) {
+                        uartBaudrate(serialSpeed);
+                    }
+                });
+    }
+
+    /**
+     * ArduinoLike な Method
+     * @param string
+     */
+    public void serialPrint(String string){
+        this.uartWrite(string);
+    }
     ///////////////////////////
     // I2C
     ///////////////////////////
-    
+
     /**
      * I2Cのコンディションを発行する
      * @param condition コンディション。Konashi.I2C_START_CONDITION, Konashi.I2C_RESTART_CONDITION, Konashi.I2C_STOP_CONDITION を指定できる。
@@ -533,6 +558,42 @@ public class KonashiManager {
                 .then(new I2cReadFilter());
     }
 
+    /**
+     * ArduinoLikeMethod
+     * @param address
+     */
+    public void wireBeginTransmission(byte address){
+        this.address = address;
+        this.i2cStartCondition();
+        this.wireDataLength = 0;
+        wireData = new byte[20];
+    }
+
+    /**
+     * ArduinoLikeMethod
+     */
+    public void wireEndTransmission(){
+        if(wireDataLength != 0){
+            i2cWrite(wireDataLength,wireData,this.address)
+                    .then(new DoneCallback<BluetoothGattCharacteristic>() {
+                        @Override
+                        public void onDone(BluetoothGattCharacteristic result) {
+                            i2cStopCondition();
+                        }
+                    });
+        }else {
+            this.i2cStopCondition();
+        }
+    }
+
+    /**
+     * ArduinoLikeMethod
+     * @param data
+     */
+    public void wireWrite(byte data){
+        this.wireData[wireDataLength] = data;
+        wireDataLength++;
+    }
     ///////////////////////////
     // Hardware
     ///////////////////////////
