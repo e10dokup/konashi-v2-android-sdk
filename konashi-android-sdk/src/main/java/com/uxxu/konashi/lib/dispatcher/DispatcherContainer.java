@@ -4,6 +4,7 @@ import com.uxxu.konashi.lib.store.AioStore;
 import com.uxxu.konashi.lib.store.I2cStore;
 import com.uxxu.konashi.lib.store.PioStore;
 import com.uxxu.konashi.lib.store.PwmStore;
+import com.uxxu.konashi.lib.store.SpiStore;
 import com.uxxu.konashi.lib.store.UartStore;
 
 /**
@@ -15,6 +16,7 @@ public class DispatcherContainer {
     private CharacteristicDispatcher<AioStore, AioStoreUpdater> mAioDispatcher;
     private CharacteristicDispatcher<I2cStore, I2cStoreUpdater> mI2cDispatcher;
     private CharacteristicDispatcher<UartStore, UartStoreUpdater> mUartDispatcher;
+    private CharacteristicDispatcher<SpiStore, SpiStoreUpdater> mSpiDispatcher;
 
     public DispatcherContainer() {
         mPioDispatcher = new CharacteristicDispatcher<>(PioStoreUpdater.class);
@@ -22,6 +24,7 @@ public class DispatcherContainer {
         mAioDispatcher = new CharacteristicDispatcher<>(AioStoreUpdater.class);
         mUartDispatcher = new CharacteristicDispatcher<>(UartStoreUpdater.class);
         mI2cDispatcher = new CharacteristicDispatcher<>(I2cStoreUpdater.class);
+        mSpiDispatcher = new CharacteristicDispatcher<>(SpiStoreUpdater.class);
     }
 
     public CharacteristicDispatcher<PioStore, PioStoreUpdater> getPioDispatcher() {
@@ -42,5 +45,9 @@ public class DispatcherContainer {
 
     public CharacteristicDispatcher<I2cStore, I2cStoreUpdater> getI2cDispatcher() {
         return mI2cDispatcher;
+    }
+
+    public CharacteristicDispatcher<SpiStore, SpiStoreUpdater> getSpiDispatcher() {
+        return mSpiDispatcher;
     }
 }

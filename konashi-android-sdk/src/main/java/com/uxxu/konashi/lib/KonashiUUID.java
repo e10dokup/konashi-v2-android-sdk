@@ -65,6 +65,10 @@ public class KonashiUUID {
     public static final UUID UART_TX_UUID                         = UUID.fromString("229B3012" + BASE_UUID_STRING);
     public static final UUID UART_RX_NOTIFICATION_UUID            = UUID.fromString("229B3013" + BASE_UUID_STRING);
 
+    public static final UUID SPI_CONFIG_UUID                      = UUID.fromString("229B3016" + BASE_UUID_STRING);
+    public static final UUID SPI_DATA_UUID                        = UUID.fromString("229B3017" + BASE_UUID_STRING);
+    public static final UUID SPI_NOTIFICATION_UUID                = UUID.fromString("229B3018" + BASE_UUID_STRING);
+
     public static final UUID HARDWARE_RESET_UUID                  = UUID.fromString("229B3014" + BASE_UUID_STRING);
     public static final UUID HARDWARE_LOW_BAT_NOTIFICATION_UUID   = UUID.fromString("229B3015" + BASE_UUID_STRING);
     

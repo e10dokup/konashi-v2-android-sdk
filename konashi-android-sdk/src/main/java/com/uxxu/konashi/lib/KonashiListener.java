@@ -11,5 +11,6 @@ public interface KonashiListener {
     void onError(KonashiManager manager, BletiaException e);
     void onUpdatePioOutput(KonashiManager manager, int value);
     void onUpdateUartRx(KonashiManager manager, byte[] value);
+    void onUpdateSpiMiso(KonashiManager manager, byte[] value);
     void onUpdateBatteryLevel(KonashiManager manager, int level);
 }

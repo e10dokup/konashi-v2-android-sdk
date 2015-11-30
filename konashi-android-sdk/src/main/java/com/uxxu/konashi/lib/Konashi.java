@@ -253,6 +253,26 @@ public class Konashi {
      */
     public static final int FAILURE = -1;
 
+    ///////////////////////////////////////////
+    // SPI
+    ///////////////////////////////////////////
+    public static final int SPI_MODE_ENABLE_CPOL0_CPHA0 = 0;
+    public static final int SPI_MODE_ENABLE_CPOL0_CPHA1 = 1;
+    public static final int SPI_MODE_ENABLE_CPOL1_CPHA0 = 2;
+    public static final int SPI_MODE_ENABLE_CPOL1_CPHA1 = 3;
+    public static final int SPI_MODE_DISABLE = -1;
+
+    public static final int SPI_SPEED_200K = 20;
+    public static final int SPI_SPEED_500K = 50;
+    public static final int SPI_SPEED_1M = 100;
+    public static final int SPI_SPEED_2M = 200;
+    public static final int SPI_SPEED_3M = 300;
+    public static final int SPI_SPEED_6M = 600;
+
+    public static final int SPI_BIT_ORDER_BIG_ENDIAN = 0;
+    public static final int SPI_BIT_ORDER_LITTLE_ENDIAN = 1;
+
+    public static final int SPI_DATA_MAX_LENGTH = 64;
 
     /**
      * KonashiManagerのシングルトン
