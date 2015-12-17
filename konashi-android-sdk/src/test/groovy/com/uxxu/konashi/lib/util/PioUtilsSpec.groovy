@@ -5,7 +5,7 @@ import spock.lang.Specification;
 /**
  * Created by izumin on 10/7/15.
  */
-class PioUtilsTest extends Specification {
+class PioUtilsSpec extends Specification {
     def ".isValidPin()"() {
         expect:
         PioUtils.isValidPin(pin) == result

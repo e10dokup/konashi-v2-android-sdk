@@ -1,1 +1,1 @@
-include ':konashi-android-sdk', ':samples:test_all_functions', ':samples:aio-sample', ':samples:pwm-sample', ':samples:pio-sample', ':samples:uart-sample', ':samples:i2c-sample'
+include ':konashi-android-sdk', ':samples:test_all_functions', ':samples:aio-sample', ':samples:pwm-sample', ':samples:pio-sample', ':samples:uart-sample', ':samples:i2c-sample', ':samples:spi-sample'

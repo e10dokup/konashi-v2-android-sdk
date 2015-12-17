@@ -70,6 +70,17 @@ class EventEmitter extends ArrayList<KonashiListener> {
         });
     }
 
+    public void emitUpdateSpiMiso(final KonashiManager manager, final byte[] value) {
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                for (KonashiListener listener : self) {
+                    listener.onUpdateSpiMiso(manager, value);
+                }
+            }
+        });
+    }
+
     public void emitUpdateBatteryLevel(final KonashiManager manager, final int level) {
         mHandler.post(new Runnable() {
             @Override

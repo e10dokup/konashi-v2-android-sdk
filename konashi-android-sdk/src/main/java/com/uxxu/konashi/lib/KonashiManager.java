@@ -21,6 +21,9 @@ import com.uxxu.konashi.lib.action.PwmDutyAction;
 import com.uxxu.konashi.lib.action.PwmLedDriveAction;
 import com.uxxu.konashi.lib.action.PwmPeriodAction;
 import com.uxxu.konashi.lib.action.PwmPinModeAction;
+import com.uxxu.konashi.lib.action.SpiConfigAction;
+import com.uxxu.konashi.lib.action.SpiReadAction;
+import com.uxxu.konashi.lib.action.SpiWriteAction;
 import com.uxxu.konashi.lib.action.UartBaudrateAction;
 import com.uxxu.konashi.lib.action.UartModeAction;
 import com.uxxu.konashi.lib.action.UartWriteAction;
@@ -30,6 +33,7 @@ import com.uxxu.konashi.lib.dispatcher.DispatcherContainer;
 import com.uxxu.konashi.lib.dispatcher.I2cStoreUpdater;
 import com.uxxu.konashi.lib.dispatcher.PioStoreUpdater;
 import com.uxxu.konashi.lib.dispatcher.PwmStoreUpdater;
+import com.uxxu.konashi.lib.dispatcher.SpiStoreUpdater;
 import com.uxxu.konashi.lib.dispatcher.UartStoreUpdater;
 import com.uxxu.konashi.lib.filter.AioAnalogReadFilter;
 import com.uxxu.konashi.lib.filter.BatteryLevelReadFilter;
@@ -38,6 +42,7 @@ import com.uxxu.konashi.lib.store.AioStore;
 import com.uxxu.konashi.lib.store.I2cStore;
 import com.uxxu.konashi.lib.store.PioStore;
 import com.uxxu.konashi.lib.store.PwmStore;
+import com.uxxu.konashi.lib.store.SpiStore;
 import com.uxxu.konashi.lib.store.UartStore;
 
 import org.jdeferred.DoneCallback;
@@ -97,6 +102,10 @@ public class KonashiManager {
     private UartStore mUartStore;
     private CharacteristicDispatcher<UartStore, UartStoreUpdater> mUartDispatcher;
 
+    // SPI
+    private SpiStore mSpiStore;
+    private CharacteristicDispatcher<SpiStore, SpiStoreUpdater> mSpiDispatcher;
+
     private Bletia mBletia;
     private EventEmitter mEmitter;
     private CallbackHandler mCallbackHandler;
@@ -134,6 +143,10 @@ public class KonashiManager {
         // UART
         mUartDispatcher = mDispacherContainer.getUartDispatcher();
         mUartStore = new UartStore(mUartDispatcher);
+
+        // SPI
+        mSpiDispatcher = mDispacherContainer.getSpiDispatcher();
+        mSpiStore = new SpiStore(mSpiDispatcher);
 
         mBletia = new Bletia(context);
         mConnectionHelper = new ConnectionHelper(mConnectionHelperCallback, context);
@@ -439,7 +452,7 @@ public class KonashiManager {
      * @param string 送信するデータ(string)
      */
     public Promise<BluetoothGattCharacteristic, BletiaException, Void> uartWrite(String string) {
-        return execute(new UartWriteAction(getKonashiService(), string, mUartStore), mUartDispatcher);
+        return execute(new UartWriteAction(getKonashiService(), string, mUartStore));
     }
 
     /**
@@ -591,6 +604,29 @@ public class KonashiManager {
             }
         };
     }
+
+
+    ///////////////////////////
+    // SPI
+    ///////////////////////////
+
+    public Promise<BluetoothGattCharacteristic, BletiaException, Void> spiConfig(int mode, int byteOrder, int speed) {
+        return execute(new SpiConfigAction(getKonashiService(), mode, byteOrder, speed, mSpiStore))
+                .then(mSpiDispatcher);
+    }
+
+    public Promise<BluetoothGattCharacteristic, BletiaException, Void> spiWrite(String data) {
+        return execute(new SpiWriteAction(getKonashiService(), data));
+    }
+
+    public Promise<BluetoothGattCharacteristic, BletiaException, Void> spiWrite(byte[] data) {
+        return execute(new SpiWriteAction(getKonashiService(), data));
+    }
+
+    public Promise<BluetoothGattCharacteristic, BletiaException, Void> spiRead() {
+        return execute(new SpiReadAction(getKonashiService()));
+    }
+
 
     ///////////////////////////
     // Hardware

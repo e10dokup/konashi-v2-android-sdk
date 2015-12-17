@@ -4,7 +4,7 @@ import spock.lang.Specification
 /**
  * Created by izumin on 10/7/15.
  */
-class UartUtilsTest extends Specification {
+class UartUtilsSpec extends Specification {
     def ".isValidBaudrate()"() {
         expect:
         UartUtils.isValidBaudrate(baudrate) == result

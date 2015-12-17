@@ -5,7 +5,7 @@ import spock.lang.Specification;
 /**
  * Created by izumin on 10/7/15.
  */
-class I2cUtilsTest extends Specification {
+class I2cUtilsSpec extends Specification {
     def ".isValidMode()"() {
         expect:
         I2cUtils.isValidMode(mode) == result

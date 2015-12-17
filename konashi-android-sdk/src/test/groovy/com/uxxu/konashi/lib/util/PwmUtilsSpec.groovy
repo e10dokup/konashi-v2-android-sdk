@@ -5,7 +5,7 @@ import spock.lang.Specification;
 /**
  * Created by izumin on 10/7/15.
  */
-class PwmUtilsTest extends Specification {
+class PwmUtilsSpec extends Specification {
     def ".isValidPin()"() {
         expect:
         PwmUtils.isValidPin(pin) == result

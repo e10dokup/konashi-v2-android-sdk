@@ -131,5 +131,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         public void onUpdateBatteryLevel(KonashiManager manager, int level) {
 
         }
+
+        @Override
+        public void onUpdateSpiMiso(KonashiManager manager, byte[] value) {
+
+        }
     };
 }

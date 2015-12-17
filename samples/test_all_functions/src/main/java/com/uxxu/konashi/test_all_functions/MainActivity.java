@@ -236,5 +236,10 @@ public class MainActivity extends AppCompatActivity
         public void onUpdateBatteryLevel(KonashiManager manager, int level) {
 
         }
+
+        @Override
+        public void onUpdateSpiMiso(KonashiManager manager, byte[] value) {
+
+        }
     };
 }

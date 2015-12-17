@@ -306,6 +306,7 @@ public final class CommunicationFragment extends Fragment {
         @Override public void onDisconnect(KonashiManager manager) {}
         @Override public void onError(KonashiManager manager, BletiaException e) {}
         @Override public void onUpdatePioOutput(KonashiManager manager, int value) {}
+        @Override public void onUpdateSpiMiso(KonashiManager manager, byte[] value) {}
 
         @Override
         public void onUpdateUartRx(KonashiManager manager, byte[] value) {

@@ -2,7 +2,7 @@ package com.uxxu.konashi.lib.util
 
 import spock.lang.Specification
 
-class AioUtilsTest extends Specification {
+class AioUtilsSpec extends Specification {
     def ".isValidPin"() {
         expect:
         AioUtils.isValidPin(pin) == result

@@ -4,10 +4,6 @@
 
 ---
 
-<img src="http://konashi.ux-xu.com/img/documents/i2c.png" width="600" />
-
----
-
 ## Supported version
 
 現在、konashi2.0以降のみをサポートしています。
@@ -24,7 +20,8 @@ dependencies {
 
 ## Getting Started
 
-\{Android版ドキュメントは2015年8月末をめどに更新予定です\}
+- [Getting Started](http://konashi.ux-xu.com/android/#getting-started)
+- [APIリファレンス](http://konashi.ux-xu.com/android/#title-software)
 
 ## 開発について
 

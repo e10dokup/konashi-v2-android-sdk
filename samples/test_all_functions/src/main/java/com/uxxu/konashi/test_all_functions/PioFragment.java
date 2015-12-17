@@ -96,6 +96,7 @@ public final class PioFragment extends Fragment {
 
         @Override public void onUpdateUartRx(KonashiManager manager, byte[] value) {}
         @Override public void onUpdateBatteryLevel(KonashiManager manager, int level) {}
+        @Override public void onUpdateSpiMiso(KonashiManager manager, byte[] value) {}
     };
 
     public static final class PioTableRow extends TableRow {

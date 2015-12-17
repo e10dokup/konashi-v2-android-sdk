@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">SPI Sample</string>
+
+    <string name="btn_send">Send</string>
+    <string name="label_read">Read value</string>
+    <string name="btn_find">konashiをさがす</string>
+</resources>

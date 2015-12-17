@@ -76,18 +76,19 @@ class ConnectionHelper implements BleDeviceSelectionDialog.OnBleDeviceSelectList
     public void onLeScan(final BluetoothDevice device, int rssi, byte[] scanRecord) {
         KonashiUtils.log("DeviceName: " + device.getName());
 
-        if (mKonashiName != null) {
-            if (device.getName().equals(mKonashiName)) {
-                onSelectBleDevice(device);
-            }
+        if (device.getName() == null) {
+            return;
+        }
 
+        if ((mKonashiName != null) && device.getName().equals(mKonashiName)) {
+            onSelectBleDevice(device);
             return;
         }
 
         mActivity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                if (!mIsShowKonashiOnly || ((device.getName() != null) && device.getName().startsWith(KONAHSHI_DEVICE_NAME))) {
+                if (!mIsShowKonashiOnly || device.getName().startsWith(KONAHSHI_DEVICE_NAME)) {
                     mBleDeviceListAdapter.addDevice(device);
                     mBleDeviceListAdapter.notifyDataSetChanged();
                 }

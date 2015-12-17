@@ -52,6 +52,8 @@ class CallbackHandler implements BletiaListener {
             bletia.enableNotification(service.getCharacteristic(KonashiUUID.PIO_INPUT_NOTIFICATION_UUID), true);
             bletia.enableNotification(service.getCharacteristic(KonashiUUID.UART_RX_NOTIFICATION_UUID), true);
             bletia.enableNotification(service.getCharacteristic(KonashiUUID.HARDWARE_LOW_BAT_NOTIFICATION_UUID), true);
+            BluetoothGattCharacteristic spiCharacteristic = service.getCharacteristic(KonashiUUID.SPI_NOTIFICATION_UUID);
+            if(spiCharacteristic != null) bletia.enableNotification(spiCharacteristic, true);
             mEmitter.emitConnect(mManager);
         }
     }
@@ -66,6 +68,8 @@ class CallbackHandler implements BletiaListener {
         } else if (KonashiUUID.UART_RX_NOTIFICATION_UUID.equals(uuid)) {
             mDispatcherContainer.getUartDispatcher().onDone(characteristic);
             mEmitter.emitUpdateUartRx(mManager, UartUtils.removeLengthByte(characteristic.getValue()));
+        } else if (KonashiUUID.SPI_NOTIFICATION_UUID.equals(uuid)) {
+            mEmitter.emitUpdateSpiMiso(mManager, characteristic.getValue());
         } else if (KonashiUUID.HARDWARE_LOW_BAT_NOTIFICATION_UUID.equals(uuid)) {
             mEmitter.emitUpdateBatteryLevel(mManager, KonashiUtils.getBatteryLevel(characteristic));
         }
