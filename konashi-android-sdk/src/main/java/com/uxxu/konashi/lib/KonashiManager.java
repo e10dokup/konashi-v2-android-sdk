@@ -21,6 +21,7 @@ import com.uxxu.konashi.lib.action.PwmDutyAction;
 import com.uxxu.konashi.lib.action.PwmLedDriveAction;
 import com.uxxu.konashi.lib.action.PwmPeriodAction;
 import com.uxxu.konashi.lib.action.PwmPinModeAction;
+import com.uxxu.konashi.lib.action.SoftwareRevisionReadAction;
 import com.uxxu.konashi.lib.action.SpiConfigAction;
 import com.uxxu.konashi.lib.action.SpiReadAction;
 import com.uxxu.konashi.lib.action.SpiWriteAction;
@@ -38,6 +39,7 @@ import com.uxxu.konashi.lib.dispatcher.UartStoreUpdater;
 import com.uxxu.konashi.lib.filter.AioAnalogReadFilter;
 import com.uxxu.konashi.lib.filter.BatteryLevelReadFilter;
 import com.uxxu.konashi.lib.filter.I2cReadFilter;
+import com.uxxu.konashi.lib.filter.SoftwareRevisionReadFilter;
 import com.uxxu.konashi.lib.store.AioStore;
 import com.uxxu.konashi.lib.store.I2cStore;
 import com.uxxu.konashi.lib.store.PioStore;
@@ -654,6 +656,15 @@ public class KonashiManager {
      */
     public Promise<Integer, BletiaException, Void> getSignalStrength() {
         return execute(new ReadRemoteRssiAction());
+    }
+
+    /**
+     * konashi のRevisionを取得
+     * @return Revision
+     */
+    public Promise<String, BletiaException, Void> getSoftwareRevision() {
+        return execute(new SoftwareRevisionReadAction(getService(KonashiUUID.DEVICE_INFORMATION_SERVICE_UUID)))
+                .then(new SoftwareRevisionReadFilter());
     }
 
     private void connect(BluetoothDevice device){

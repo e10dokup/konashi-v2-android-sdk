@@ -159,7 +159,7 @@ public class BleDeviceSelectionDialog implements OnItemClickListener {
         }
         
         if(mListener!=null){
-            mListener.onSelectBleDevice(mAdapter.getDevice(position));
+            mListener.onSelectBleDevice(mAdapter.getDevice(position).first);
         }
     }
     
