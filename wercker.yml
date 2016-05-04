@@ -1,4 +1,4 @@
-box: izumin5210/android
+box: izumin5210/android:build-tools-23.0.1_target-api-23
 build:
   steps:
     - script:
