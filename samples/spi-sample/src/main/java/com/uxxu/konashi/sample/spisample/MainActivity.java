@@ -1,9 +1,10 @@
 package com.uxxu.konashi.sample.spisample;
 
+import android.Manifest;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -21,7 +22,10 @@ import org.jdeferred.Promise;
 import java.util.Arrays;
 
 import info.izumin.android.bletia.BletiaException;
+import permissions.dispatcher.NeedsPermission;
+import permissions.dispatcher.RuntimePermissions;
 
+@RuntimePermissions
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     private final MainActivity self = this;
 
@@ -40,6 +44,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mResultText = (TextView) findViewById(R.id.text_read);
 
         mKonashiManager = new KonashiManager(getApplicationContext());
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        MainActivityPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
     }
 
     @Override
@@ -74,6 +84,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onDestroy();
     }
 
+    @NeedsPermission(Manifest.permission.ACCESS_COARSE_LOCATION)
+    void findKonashi() {
+        mKonashiManager.find(this);
+    }
+
     private void refreshViews() {
         boolean isReady = mKonashiManager.isReady();
         findViewById(R.id.btn_find).setVisibility(!isReady ? View.VISIBLE : View.GONE);
@@ -86,7 +101,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_find:
-                mKonashiManager.find(this);
+                MainActivityPermissionsDispatcher.findKonashiWithCheck(this);
                 break;
             case R.id.btn_send:
                 mKonashiManager.digitalWrite(Konashi.PIO2, Konashi.LOW)

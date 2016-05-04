@@ -1,7 +1,9 @@
 package com.uxxu.konashi.sample.pwmsample;
 
+import android.Manifest;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.SeekBar;
@@ -15,7 +17,10 @@ import org.jdeferred.DoneCallback;
 import org.jdeferred.FailCallback;
 
 import info.izumin.android.bletia.BletiaException;
+import permissions.dispatcher.NeedsPermission;
+import permissions.dispatcher.RuntimePermissions;
 
+@RuntimePermissions
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     public final MainActivity self = this;
 
@@ -29,6 +34,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         findViewById(R.id.btn_find).setOnClickListener(this);
 
         mKonashiManager = new KonashiManager(getApplicationContext());
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        MainActivityPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
     }
 
     @Override
@@ -63,6 +74,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onDestroy();
     }
 
+    @NeedsPermission(Manifest.permission.ACCESS_COARSE_LOCATION)
+    void findKonashi() {
+        mKonashiManager.find(this);
+    }
+
     private void refreshViews() {
         boolean isReady = mKonashiManager.isReady();
         findViewById(R.id.btn_find).setVisibility(!isReady ? View.VISIBLE : View.GONE);
@@ -88,7 +104,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View view) {
-        mKonashiManager.find(this);
+        MainActivityPermissionsDispatcher.findKonashiWithCheck(this);
     }
 
     private final KonashiListener mKonashiListener = new KonashiListener() {

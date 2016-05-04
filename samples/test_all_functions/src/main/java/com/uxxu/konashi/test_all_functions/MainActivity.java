@@ -1,9 +1,11 @@
 package com.uxxu.konashi.test_all_functions;
 
+import android.Manifest;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
@@ -20,8 +22,10 @@ import com.uxxu.konashi.lib.KonashiManager;
 import com.uxxu.konashi.lib.util.KonashiUtils;
 
 import info.izumin.android.bletia.BletiaException;
+import permissions.dispatcher.NeedsPermission;
+import permissions.dispatcher.RuntimePermissions;
 
-
+@RuntimePermissions
 public class MainActivity extends AppCompatActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {
 
@@ -45,6 +49,12 @@ public class MainActivity extends AppCompatActivity
                 (DrawerLayout) findViewById(R.id.drawer_layout));
 
         mOverlay = findViewById(R.id.overlay);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        MainActivityPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
     }
 
     @Override
@@ -170,7 +180,7 @@ public class MainActivity extends AppCompatActivity
                 }
                 break;
             case R.id.action_find_konashi:
-                mKonashiManager.find(this);
+                MainActivityPermissionsDispatcher.findKonashiWithCheck(this);
                 return true;
             case R.id.action_disconnect:
                 mKonashiManager.disconnect();
@@ -179,6 +189,11 @@ public class MainActivity extends AppCompatActivity
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @NeedsPermission(Manifest.permission.ACCESS_COARSE_LOCATION)
+    void findKonashi() {
+        mKonashiManager.find(this);
     }
 
     private void refreshActionBarMenu() {
