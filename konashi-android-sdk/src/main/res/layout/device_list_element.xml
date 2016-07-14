@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
@@ -12,14 +13,26 @@
         android:layout_marginTop="@dimen/konashi_lib_device_list_element_margin"
         android:layout_marginLeft="@dimen/konashi_lib_device_list_element_margin"
         android:layout_marginBottom="@dimen/konashi_lib_device_list_element_device_name_margin_bottom"
-        android:textSize="@dimen/konashi_lib_device_list_element_name_text_size" />
+        android:textSize="@dimen/konashi_lib_device_list_element_name_text_size"
+        tools:text="DeviceName" />
 
     <TextView 
         android:id="@+id/konashi_lib_device_address"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/konashi_lib_device_list_element_margin"
+        android:textColor="@color/konashi_lib_device_list_element_address_text"
+        android:textSize="@dimen/konashi_lib_device_list_element_address_text_size"
+        tools:text="Address" />
+
+    <TextView
+        android:id="@+id/konashi_lib_device_rssi"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/konashi_lib_device_list_element_margin"
         android:layout_marginLeft="@dimen/konashi_lib_device_list_element_margin"
         android:textColor="@color/konashi_lib_device_list_element_address_text"
-        android:textSize="@dimen/konashi_lib_device_list_element_address_text_size" />
+        android:textSize="@dimen/konashi_lib_device_list_element_rssi_text_size"
+        tools:text="RSSI" />
+
 </LinearLayout>

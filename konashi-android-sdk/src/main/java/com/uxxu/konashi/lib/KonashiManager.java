@@ -21,6 +21,7 @@ import com.uxxu.konashi.lib.action.PwmDutyAction;
 import com.uxxu.konashi.lib.action.PwmLedDriveAction;
 import com.uxxu.konashi.lib.action.PwmPeriodAction;
 import com.uxxu.konashi.lib.action.PwmPinModeAction;
+import com.uxxu.konashi.lib.action.SoftwareRevisionReadAction;
 import com.uxxu.konashi.lib.action.SpiConfigAction;
 import com.uxxu.konashi.lib.action.SpiReadAction;
 import com.uxxu.konashi.lib.action.SpiWriteAction;
@@ -38,6 +39,7 @@ import com.uxxu.konashi.lib.dispatcher.UartStoreUpdater;
 import com.uxxu.konashi.lib.filter.AioAnalogReadFilter;
 import com.uxxu.konashi.lib.filter.BatteryLevelReadFilter;
 import com.uxxu.konashi.lib.filter.I2cReadFilter;
+import com.uxxu.konashi.lib.filter.SoftwareRevisionReadFilter;
 import com.uxxu.konashi.lib.store.AioStore;
 import com.uxxu.konashi.lib.store.I2cStore;
 import com.uxxu.konashi.lib.store.PioStore;
@@ -49,6 +51,8 @@ import org.jdeferred.DoneCallback;
 import org.jdeferred.DonePipe;
 import org.jdeferred.Promise;
 import org.jdeferred.android.AndroidDeferredManager;
+import org.jdeferred.android.AndroidDeferredObject;
+import org.jdeferred.impl.DeferredPromise;
 
 import java.util.UUID;
 
@@ -56,6 +60,7 @@ import info.izumin.android.bletia.BleState;
 import info.izumin.android.bletia.Bletia;
 import info.izumin.android.bletia.BletiaException;
 import info.izumin.android.bletia.action.Action;
+import info.izumin.android.bletia.action.CharacteristicAction;
 import info.izumin.android.bletia.action.ReadRemoteRssiAction;
 
 
@@ -656,6 +661,15 @@ public class KonashiManager {
         return execute(new ReadRemoteRssiAction());
     }
 
+    /**
+     * konashi のRevisionを取得
+     * @return Revision
+     */
+    public Promise<String, BletiaException, Void> getSoftwareRevision() {
+        return execute(new SoftwareRevisionReadAction(getService(KonashiUUID.DEVICE_INFORMATION_SERVICE_UUID)))
+                .then(new SoftwareRevisionReadFilter());
+    }
+
     private void connect(BluetoothDevice device){
         mDevice = device;
         mBletia.connect(device);
@@ -666,7 +680,13 @@ public class KonashiManager {
     }
 
     private <T> Promise<T, BletiaException, Void> execute(Action<T, ?> action) {
-        return new AndroidDeferredManager().when(mBletia.execute(action));
+        if(action instanceof CharacteristicAction) {
+            BluetoothGattCharacteristic characteristic = ((CharacteristicAction) action).getCharacteristic();
+            if(characteristic != null) return new AndroidDeferredManager().when(mBletia.execute(action));
+            else return new AndroidDeferredManager().when(action.getDeferred().reject(new BletiaException(action, KonashiErrorType.UNSUPPORTED_OPERATION)).promise());
+        } else {
+            return new AndroidDeferredManager().when(mBletia.execute(action));
+        }
     }
 
     private BluetoothGattService getKonashiService() {

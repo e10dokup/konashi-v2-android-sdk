@@ -1,6 +1,5 @@
 package com.uxxu.konashi.lib.action;
 
-import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattService;
 
 import com.uxxu.konashi.lib.KonashiErrorType;
@@ -17,16 +16,16 @@ import info.izumin.android.bletia.wrapper.BluetoothGattWrapper;
  */
 public abstract class KonashiWriteCharacteristicAction extends WriteCharacteristicAction {
 
-    protected KonashiWriteCharacteristicAction(BluetoothGattCharacteristic characteristic) {
-        super(characteristic);
-    }
-
     protected KonashiWriteCharacteristicAction(BluetoothGattService service, UUID uuid) {
-        this(service.getCharacteristic(uuid));
+        super(service, uuid);
     }
 
     @Override
     public boolean execute(BluetoothGattWrapper gattWrapper) {
+        if (getCharacteristic() == null) {
+            rejectIfParamsAreInvalid(KonashiErrorType.UNSUPPORTED_OPERATION);
+            return false;
+        }
         BletiaErrorType errorType = validate();
         if (errorType == KonashiErrorType.NO_ERROR) {
             setValue();

@@ -73,7 +73,7 @@ class ConnectionHelper implements BleDeviceSelectionDialog.OnBleDeviceSelectList
     }
 
     @Override
-    public void onLeScan(final BluetoothDevice device, int rssi, byte[] scanRecord) {
+    public void onLeScan(final BluetoothDevice device, final int rssi, byte[] scanRecord) {
         KonashiUtils.log("DeviceName: " + device.getName());
 
         if (device.getName() == null) {
@@ -89,7 +89,7 @@ class ConnectionHelper implements BleDeviceSelectionDialog.OnBleDeviceSelectList
             @Override
             public void run() {
                 if (!mIsShowKonashiOnly || device.getName().startsWith(KONAHSHI_DEVICE_NAME)) {
-                    mBleDeviceListAdapter.addDevice(device);
+                    mBleDeviceListAdapter.addDevice(device, rssi);
                     mBleDeviceListAdapter.notifyDataSetChanged();
                 }
             }

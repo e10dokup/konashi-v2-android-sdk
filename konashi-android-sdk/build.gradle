@@ -39,7 +39,7 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'info.izumin.android:bletia:1.3.3'
+    compile 'info.izumin.android:bletia:1.3.5'
 
     androidTestCompile 'com.android.support.test:runner:0.3'
     androidTestCompile 'com.android.support.test:rules:0.3'

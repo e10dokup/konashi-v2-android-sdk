@@ -29,7 +29,7 @@ public class AioAnalogReadAction extends ReadCharacteristicAction {
     private final int mPin;
 
     public AioAnalogReadAction(BluetoothGattService service, int pin) {
-        super(service.getCharacteristic(sPin2Uuid.get(pin, KonashiUUID.ANALOG_READ0_UUID)));
+        super(service, sPin2Uuid.get(pin, KonashiUUID.ANALOG_READ0_UUID));
         mPin = pin;
     }
 

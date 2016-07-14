@@ -16,6 +16,6 @@ public class BatteryLevelReadAction extends ReadCharacteristicAction {
     private static final UUID UUID = KonashiUUID.BATTERY_LEVEL_UUID;
 
     public BatteryLevelReadAction(BluetoothGattService service) {
-        super(service.getCharacteristic(UUID));
+        super(service, UUID);
     }
 }

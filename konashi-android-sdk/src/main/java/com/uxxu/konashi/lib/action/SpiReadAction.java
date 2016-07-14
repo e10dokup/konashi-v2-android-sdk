@@ -20,6 +20,6 @@ public class SpiReadAction extends ReadCharacteristicAction {
     private byte[] mData = new byte[Konashi.SPI_DATA_MAX_LENGTH];
 
     public SpiReadAction(BluetoothGattService service) {
-        super(service.getCharacteristic(UUID));
+        super(service, UUID);
     }
 }

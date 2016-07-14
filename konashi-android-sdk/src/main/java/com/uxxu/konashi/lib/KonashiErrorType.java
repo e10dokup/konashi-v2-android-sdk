@@ -20,6 +20,7 @@ public enum KonashiErrorType implements BletiaErrorType{
     INVALID_CONDITION,
     INVALID_ENDIANNESS,
     INVALID_SPEED,
+    UNSUPPORTED_OPERATION,
     NO_ERROR;
 
     @Override

@@ -17,7 +17,7 @@ public class HardwareResetAction extends KonashiWriteCharacteristicAction {
     private static final UUID UUID = KonashiUUID.HARDWARE_RESET_UUID;
 
     public HardwareResetAction(BluetoothGattService service) {
-        super(service.getCharacteristic(UUID));
+        super(service, UUID);
     }
 
     @Override

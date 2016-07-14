@@ -62,6 +62,19 @@ public class KonashiUtils {
         return characteristic.getValue()[0] & 0xff;
     }
 
+    /**
+     * Revisionのvalueから最後の1バイト（0x00）を取り除く
+     * @param value 返ってきたcharacteristicのvalue
+     * @return RevisionのString
+     */
+    public static String getSoftwareRevision(byte[] value) {
+        byte[] cutValue = new byte[value.length-1];
+        for(int i=0; i<cutValue.length; i++) {
+            cutValue[i] = value[i];
+        }
+        return new String(cutValue);
+    }
+
     public static int bytes2int(byte[] bytes) {
         int value = 0;
         for (byte b : bytes) {
